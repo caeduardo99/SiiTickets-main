@@ -120,115 +120,168 @@ $(document).ready(function () {
           opcionesDeFormato
         );
       
-        var objGeneratePdf = {
-          content: [
-            { image: imageUrl, width: 100, height: 100, alignment: "center" },
-            {
-              text: `Ticket número: 000-${idTicket}`,
-              fontSize: 18,
-              alignment: "center",
-              bold: true,
-              margin: [0, 15, 0, 0],
-            },
-            {
-              text: "Asunto",
-              fontSize: 12,
-              bold: true,
-              margin: [0, 15, 0, 0],
-            },
-            {
-              text: asunto,
-              fontSize: 11,
-              margin: [0, 8, 0, 0],
-            },
-            {
-              text: "Detalle ",
-              fontSize: 12,
-              bold: true,
-              margin: [0, 15, 0, 0],
-            },
-            {
-              text: comentario,
-              fontSize: 11,
-              margin: [0, 8, 0, 0],
-            },
-            {
-              text: "Detalles del ticket",
-              fontSize: 12,
-              bold: true,
-              margin: [0, 15, 0, 0],
-            },
-            {
-              ul: [
-                `Solicitante: ${solicitante}`,
-                `Agente Administrador del proyecto: ${
-                  agente == null ? "Sin asignar" : agente
-                }`,
-                `Fecha de solicitud: ${fechaCreacion}`,
-                `Fecha estimada de finalización: ${fechaEstimada}`,
-                `Fecha de finalización del ticket: ${fechaFinalizacion}`,
-                `Este requerimiento necesita facturación: ${facturar}`,
-              ],
-              margin: [0, 5, 0, 0], // Ajusta el margen superior según tus necesidades,
-              fontSize: 11,
-            },
-            {
-              text: "Actividades",
-              fontSize: 12,
-              bold: true,
-              margin: [0, 15, 0, 0],
-            },
-            {
-              ul: arrayActivities.map((activity) => [
-                `Actividad: ${activity.descripcionActividad}
-                Hecho por: ${activity.NombreAgenteActividad} ${activity.ApellidoAgenteActividad}.
-                Minutos trabajados por el agente: ${activity.minutosTrabajados} minutos.
-                FIS: ${activity.fechainicio} FFS: ${activity.fechafinal}.
-                `,
-                {
-                  image: activity.imagen_actividades,
-                  width: 430,
-                  fit: [400, 370],
-                  alignment: "center",
-                },
-              ]),
-              margin: [0, 5, 10, 10],
-              fontSize: 11,
-            },
-            {
-              text: "Causante del error - comentario del agente administrador",
-              fontSize: 12,
-              bold: true,
-              margin: [0, 15, 0, 0],
-            },
-            {
-              text: causaError,
-              fontSize: 11,
-              margin: [0, 8, 0, 0],
-            },
-          ],
-          footer: function (currentPage, pageCount) {
-            return [
+        var actividadesPdf = Array.isArray(arrayActivities) ? arrayActivities : [];
+        var contenidoPdf = [
+          {
+            columns: [
+              { image: imageUrl, width: 62, height: 62, alignment: "left" },
               {
-                text: `Reporte generado por ${razonSocial.value} el día ${fechaFormateadaActualReport}`,
-                fontSize: 8,
-                italics: true,
-                margin: [35, 5, 0, 0],
-                paddin: [10, 0, 0, 0],
-              },
-              {
-                text: 'El valor a facturar será por hora técnica o fracción de hora.',
-                fontSize: 8,
-                bold: true,
-                margin: [35, 2, 0, 0],
-                paddin: [5, 0, 0, 0],
-              },
-              {
-                text: `Página ${currentPage} de ${pageCount}`,
+                width: "*",
+                stack: [
+                  { text: "ISHIDA SOFTWARE", style: "brand" },
+                  { text: "REPORTE DE TICKET DE SOPORTE", style: "documentTitle" },
+                  { text: `Ticket N.º 000-${idTicket}`, style: "ticketNumber" },
+                ],
                 alignment: "right",
-                margin: [0, 0, 35, 0],
+                margin: [8, 5, 0, 0],
               },
-            ];
+            ],
+            columnGap: 12,
+            margin: [0, 0, 0, 18],
+          },
+          {
+            table: {
+              widths: ["*"],
+              body: [[{
+                stack: [
+                  { text: "ASUNTO", style: "sectionLabel" },
+                  { text: asunto || "Sin asunto registrado", style: "sectionValue" },
+                ],
+                fillColor: "#F1F5F9",
+                margin: [10, 9, 10, 9],
+              }]],
+            },
+            layout: { hLineWidth: () => 0, vLineWidth: () => 0 },
+            margin: [0, 0, 0, 12],
+          },
+          { text: "DESCRIPCIÓN DEL REQUERIMIENTO", style: "sectionTitle" },
+          { text: comentario || "Sin descripción registrada.", style: "bodyText", margin: [0, 0, 0, 14] },
+          { text: "DATOS DEL TICKET", style: "sectionTitle" },
+          {
+            table: {
+              headerRows: 0,
+              widths: ["32%", "*"],
+              body: [
+                [{ text: "Solicitante", style: "labelCell" }, { text: solicitante || "Sin asignar", style: "valueCell" }],
+                [{ text: "Agente encargado", style: "labelCell" }, { text: agente || "Sin asignar", style: "valueCell" }],
+                [{ text: "Fecha de creación", style: "labelCell" }, { text: fechaCreacion || "No registrada", style: "valueCell" }],
+                [{ text: "Fecha estimada de finalización", style: "labelCell" }, { text: fechaEstimada || "No definida", style: "valueCell" }],
+                [{ text: "Fecha de finalización", style: "labelCell" }, { text: fechaFinalizacion || "No finalizado", style: "valueCell" }],
+                [{ text: "Requiere facturación", style: "labelCell" }, { text: facturar || "No especificado", style: "valueCell" }],
+              ],
+            },
+            layout: {
+              hLineColor: () => "#D9E2EC",
+              vLineColor: () => "#D9E2EC",
+              hLineWidth: () => 0.6,
+              vLineWidth: () => 0.6,
+              paddingLeft: () => 8,
+              paddingRight: () => 8,
+              paddingTop: () => 6,
+              paddingBottom: () => 6,
+            },
+            margin: [0, 0, 0, 14],
+          },
+          { text: "ACTIVIDADES REGISTRADAS", style: "sectionTitle" },
+        ];
+
+        if (actividadesPdf.length) {
+          actividadesPdf.forEach((activity, index) => {
+            contenidoPdf.push({
+              table: {
+                widths: ["*"],
+                body: [[{
+                  stack: [
+                    { text: `${index + 1}. ${activity.descripcionActividad || "Actividad sin descripción"}`, style: "activityTitle" },
+                    {
+                      columns: [
+                        { width: "*", text: `Responsable: ${[activity.NombreAgenteActividad, activity.ApellidoAgenteActividad].filter(Boolean).join(" ") || "Sin asignar"}`, style: "smallText" },
+                        { width: "auto", text: `Duración: ${activity.minutosTrabajados == null ? "No registrada" : activity.minutosTrabajados + " min"}`, style: "smallText" },
+                      ],
+                      columnGap: 10,
+                      margin: [0, 4, 0, 2],
+                    },
+                    { text: `Inicio: ${activity.fechainicio || "No registrado"}    Fin: ${activity.fechafinal || "No registrado"}`, style: "smallText" },
+                  ],
+                  fillColor: index % 2 === 0 ? "#F8FAFC" : "#FFFFFF",
+                  margin: [8, 8, 8, 8],
+                }]],
+              },
+              layout: {
+                hLineColor: () => "#D9E2EC",
+                vLineColor: () => "#D9E2EC",
+                hLineWidth: () => 0.6,
+                vLineWidth: () => 0.6,
+              },
+              margin: [0, 0, 0, 7],
+              unbreakable: true,
+            });
+
+            if (typeof activity.imagen_actividades === "string" && activity.imagen_actividades.indexOf("data:image/") === 0) {
+              contenidoPdf.push({
+                image: activity.imagen_actividades,
+                fit: [460, 300],
+                alignment: "center",
+                margin: [0, 4, 0, 12],
+              });
+            }
+          });
+        } else {
+          contenidoPdf.push({ text: "No se han registrado actividades para este ticket.", style: "mutedText", margin: [0, 0, 0, 12] });
+        }
+
+        contenidoPdf.push(
+          { text: "OBSERVACIONES DEL AGENTE", style: "sectionTitle" },
+          { text: causaError || "Sin observaciones registradas.", style: "bodyText", margin: [0, 0, 0, 12] }
+        );
+
+        var objGeneratePdf = {
+          pageSize: "A4",
+          pageOrientation: "portrait",
+          pageMargins: [38, 38, 38, 58],
+          info: {
+            title: `Reporte de ticket 000-${idTicket}`,
+            subject: "Reporte de ticket de soporte",
+            author: razonSocial.value || "Ishida Software",
+            creator: "SiiTickets",
+          },
+          defaultStyle: {
+            font: "Roboto",
+            fontSize: 9,
+            color: "#243447",
+            lineHeight: 1.25,
+          },
+          styles: {
+            brand: { fontSize: 10, bold: true, color: "#64748B", characterSpacing: 1.1 },
+            documentTitle: { fontSize: 15, bold: true, color: "#17365D", margin: [0, 5, 0, 5] },
+            ticketNumber: { fontSize: 11, bold: true, color: "#FFFFFF", fillColor: "#1D4E89", margin: [8, 5, 8, 5], alignment: "right" },
+            sectionTitle: { fontSize: 10, bold: true, color: "#17365D", margin: [0, 7, 0, 7], characterSpacing: 0.4 },
+            sectionLabel: { fontSize: 9, bold: true, color: "#1D4E89", margin: [0, 0, 0, 4] },
+            sectionValue: { fontSize: 11, bold: true, color: "#243447" },
+            labelCell: { bold: true, color: "#334155", fillColor: "#F1F5F9" },
+            valueCell: { color: "#243447" },
+            bodyText: { fontSize: 9, color: "#334155" },
+            activityTitle: { fontSize: 9, bold: true, color: "#1D4E89" },
+            smallText: { fontSize: 8, color: "#475569" },
+            mutedText: { fontSize: 9, italics: true, color: "#64748B" },
+          },
+          content: contenidoPdf,
+          footer: function (currentPage, pageCount) {
+            return {
+              margin: [38, 12, 38, 0],
+              stack: [
+                {
+                  canvas: [{ type: "line", x1: 0, y1: 0, x2: 519, y2: 0, lineWidth: 0.7, lineColor: "#CBD5E1" }],
+                },
+                {
+                  columns: [
+                    { text: `Generado por ${razonSocial.value || "Ishida Software"} · ${fechaFormateadaActualReport}`, fontSize: 7, color: "#64748B", margin: [0, 6, 0, 0] },
+                    { text: `Página ${currentPage} de ${pageCount}`, alignment: "right", fontSize: 7, color: "#64748B", margin: [0, 6, 0, 0] },
+                  ],
+                },
+                { text: "Documento de uso interno · Ishida Software", alignment: "center", fontSize: 7, color: "#94A3B8", margin: [0, 4, 0, 0] },
+              ],
+            };
           },
         };
         pdfMake.createPdf(objGeneratePdf).open();
