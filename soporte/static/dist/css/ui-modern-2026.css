@@ -1,0 +1,91 @@
+/* SiiTickets · interfaz moderna 2026
+   Capa visual sobre AdminLTE: conserva Bootstrap y los componentes actuales. */
+:root {
+  --si-primary:#3157d5; --si-primary-dark:#203ea5; --si-ink:#17233c;
+  --si-muted:#71809a; --si-bg:#f4f7fc; --si-line:#e7edf5;
+  --si-card:#fff; --si-radius:16px;
+}
+html { font-size:14px; }
+body.siitickets-modern { font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif; color:var(--si-ink); background:var(--si-bg); }
+.siitickets-modern .wrapper { background:var(--si-bg); }
+.siitickets-modern .main-header { min-height:68px; border:0; border-bottom:1px solid var(--si-line); box-shadow:0 2px 16px rgba(28,45,84,.04); padding:0 1.6rem; background:rgba(255,255,255,.94); }
+.siitickets-modern .main-header .nav-link { color:#66738b; padding:.75rem .9rem; border-radius:10px; }
+.siitickets-modern .main-header .nav-link:hover { color:var(--si-primary); background:#f1f5ff; }
+.siitickets-modern .main-header .navbar-badge { top:5px; right:2px; border-radius:999px; min-width:18px; padding:3px 5px; background:#ef476f; color:white; }
+.siitickets-modern .main-sidebar { width:258px; background:#111d34; border:0; box-shadow:8px 0 30px rgba(20,34,66,.06); }
+.siitickets-modern .brand-link { min-height:68px; display:flex; align-items:center; border-bottom:1px solid rgba(255,255,255,.08); padding:.85rem .8rem; }
+.siitickets-modern .brand-link .brand-text { color:#f5f7ff; font-family:'Manrope',sans-serif; font-size:1.05rem; font-weight:800; letter-spacing:-.3px; margin-left:.8rem; line-height:1.2; }
+.siitickets-modern .brand-link .brand-text small { display:block; margin-top:4px; color:#91a1c1; font-size:.58rem; letter-spacing:1.5px; font-weight:700; }
+.siitickets-modern .sidebar { padding:0 .8rem 1.2rem; max-height:calc(100vh - 68px)!important; }
+.siitickets-modern .user-panel { align-items:center; border-bottom:1px solid rgba(255,255,255,.08)!important; padding:1rem .25rem 1.15rem!important; }
+.siitickets-modern .user-panel img { width:36px; height:36px; object-fit:cover; border:2px solid rgba(255,255,255,.18); }
+.siitickets-modern .user-panel .info { min-width:0; }
+.siitickets-modern .user-panel .info a { color:#eaf0ff!important; font-weight:600; font-size:.86rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:155px; }
+.siitickets-modern .form-control-sidebar { height:40px; color:#f1f5ff!important; background:#1a2945!important; border:1px solid rgba(255,255,255,.08)!important; border-radius:10px 0 0 10px!important; }
+.siitickets-modern .form-control-sidebar::placeholder { color:#8f9fbc; }
+.siitickets-modern .btn-sidebar { background:#1a2945!important; color:#8f9fbc!important; border:1px solid rgba(255,255,255,.08)!important; border-left:0!important; border-radius:0 10px 10px 0!important; }
+.siitickets-modern .nav-sidebar { padding-top:.8rem; }
+.siitickets-modern .nav-sidebar .nav-header { color:#7e8eac; font-size:.64rem; font-weight:800; letter-spacing:1.4px; padding:1.25rem .75rem .45rem; text-transform:uppercase; }
+.siitickets-modern .nav-sidebar .nav-link { display:flex; align-items:center; min-height:43px; margin:2px 0; padding:.68rem .8rem; border-radius:10px; color:#aab7d0; transition:background .18s,color .18s,transform .18s; }
+.siitickets-modern .nav-sidebar .nav-link p { font-weight:500; margin:0; }
+.siitickets-modern .nav-sidebar .nav-link .nav-icon { width:1.7rem; margin-right:.5rem; color:#8698b9; font-size:.95rem; }
+.siitickets-modern .nav-sidebar .nav-link:hover { color:#fff; background:rgba(255,255,255,.07); }
+.siitickets-modern .nav-sidebar .nav-link.active { color:#fff!important; background:linear-gradient(115deg,#4169ed,#3157d5)!important; box-shadow:0 7px 18px rgba(49,87,213,.25); }
+.siitickets-modern .nav-sidebar .nav-link.active .nav-icon { color:#fff; }
+.siitickets-modern .nav-treeview { padding-left:.65rem; }
+.siitickets-modern .nav-treeview>.nav-item>.nav-link { font-size:.9rem; min-height:38px; }
+.siitickets-modern .content-wrapper { min-height:calc(100vh - 68px); margin-left:258px; background:var(--si-bg); overflow:visible; }
+.siitickets-modern .content { padding:1.35rem 1.45rem 2rem; }
+.siitickets-modern .content-header { padding:1.2rem 1.45rem .25rem; }
+.siitickets-modern .content-header h1,.siitickets-modern .content-header h2,.siitickets-modern h1,.siitickets-modern h2 { font-family:'Manrope',sans-serif; color:var(--si-ink); font-weight:800; letter-spacing:-.65px; }
+.siitickets-modern h2 { font-size:1.7rem; }
+.siitickets-modern h3,.siitickets-modern h4,.siitickets-modern h5 { color:#263653; font-weight:700; }
+.siitickets-modern .card { border:1px solid var(--si-line); border-radius:var(--si-radius); box-shadow:0 5px 22px rgba(34,53,91,.035); margin-bottom:1.25rem; overflow:hidden; }
+.siitickets-modern .card-header { border-bottom:1px solid #edf1f7; background:#fff; padding:1rem 1.2rem; }
+.siitickets-modern .card-header .card-title { font-weight:700; color:#263653; }
+.siitickets-modern .card-body { padding:1.25rem; }
+.siitickets-modern .card-footer { background:#fbfcff; border-top:1px solid #edf1f7; }
+.siitickets-modern .small-box { border-radius:var(--si-radius); box-shadow:0 8px 22px rgba(34,53,91,.08); overflow:hidden; transition:transform .18s,box-shadow .18s; }
+.siitickets-modern .small-box:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(34,53,91,.13); }
+.siitickets-modern .btn { border-radius:9px; font-weight:600; padding:.52rem .9rem; transition:all .16s ease; box-shadow:none; }
+.siitickets-modern .btn-sm { padding:.38rem .7rem; border-radius:8px; }
+.siitickets-modern .btn-primary { background:var(--si-primary); border-color:var(--si-primary); }
+.siitickets-modern .btn-primary:hover { background:var(--si-primary-dark); border-color:var(--si-primary-dark); }
+.siitickets-modern .btn-success { background:#16866b; border-color:#16866b; }
+.siitickets-modern .form-control,.siitickets-modern .custom-select,.siitickets-modern .select2-container--default .select2-selection--single { min-height:39px; border:1px solid #dfe6f0; border-radius:9px; color:#24334e; box-shadow:none; }
+.siitickets-modern textarea.form-control { min-height:auto; }
+.siitickets-modern .form-control:focus,.siitickets-modern .custom-select:focus { border-color:#8ea6fb; box-shadow:0 0 0 .2rem rgba(49,87,213,.10); }
+.siitickets-modern label { margin-bottom:.4rem; color:#4c5b75; font-size:.86rem; font-weight:600; }
+.siitickets-modern .table { color:#34435d; }
+.siitickets-modern .table thead th { background:#f7f9fd; color:#74819a; font-size:.76rem; font-weight:800; letter-spacing:.45px; text-transform:uppercase; border-top:0; border-bottom:1px solid #e7edf5; vertical-align:middle; }
+.siitickets-modern .table td { border-color:#edf1f7; vertical-align:middle; }
+.siitickets-modern .table-hover tbody tr:hover { background:#f7f9ff; }
+.siitickets-modern .breadcrumb { background:transparent; padding:0; }
+.siitickets-modern .dropdown-menu { border:1px solid var(--si-line); border-radius:12px; box-shadow:0 12px 36px rgba(30,45,78,.14); padding:.5rem; }
+.siitickets-modern .dropdown-item { padding:.65rem .8rem; border-radius:8px; }
+.siitickets-modern .dropdown-item:hover { background:#f1f5ff; color:var(--si-primary); }
+.siitickets-modern .main-footer { background:#fff; color:#8792a7; border-top:1px solid var(--si-line); margin-left:258px; padding:1rem 1.5rem; font-size:.8rem; }
+.siitickets-modern .main-footer a { color:var(--si-primary); font-weight:700; }
+.siitickets-modern .alert { border:0; border-radius:11px; }
+.siitickets-modern .modal-content { border:0; border-radius:16px; box-shadow:0 22px 70px rgba(21,35,65,.22); overflow:hidden; }
+.siitickets-modern .modal-header { background:#f8faff; border-bottom:1px solid var(--si-line); }
+.siitickets-modern .select2-container--default .select2-selection--single { padding:.38rem .45rem; height:39px; }
+.siitickets-modern .select2-container--default .select2-selection--single .select2-selection__rendered { line-height:24px; }
+.siitickets-modern .select2-container--default .select2-selection--single .select2-selection__arrow { height:37px; }
+.siitickets-modern .preloader { background:#f7f9fe; }
+@media (max-width:991.98px) {
+ .siitickets-modern .main-sidebar { transform:translateX(-258px); }
+ .siitickets-modern.sidebar-open .main-sidebar { transform:translateX(0); }
+ .siitickets-modern .content-wrapper,.siitickets-modern .main-footer { margin-left:0; }
+ .siitickets-modern .content { padding:1rem .8rem 1.5rem; }
+ .siitickets-modern .content-header { padding:1rem .8rem 0; }
+}
+@media (min-width:992px) {
+ .siitickets-modern.sidebar-collapse .main-sidebar { transform:translateX(-258px); }
+ .siitickets-modern.sidebar-collapse .content-wrapper,.siitickets-modern.sidebar-collapse .main-footer { margin-left:0; }
+}
+@media (max-width:575.98px) {
+ .siitickets-modern .main-header { padding:0 .5rem; }
+ .siitickets-modern .card-body { padding:1rem; }
+ .siitickets-modern .content-header h2 { font-size:1.4rem; }
+}
