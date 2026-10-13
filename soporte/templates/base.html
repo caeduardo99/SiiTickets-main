@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="{% static 'images/logo-siiticket-removebg-preview.png' %}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
     <!-- IonIcons -->
@@ -30,11 +30,12 @@
         href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
 
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dist/css/ui-modern-2026.css' %}">
 
 
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed siitickets-modern">
     <div class="wrapper">
         <div class="preloader flex-column justify-content-center align-items-center">
             <img class="swal2-noanimation" src="{% static 'images/logoishida.png' %}" alt="AdminLTELogo" height="250"
@@ -48,7 +49,7 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+                    <a href="{% url 'view_control_panel' %}" class="nav-link"><i class="fas fa-th-large mr-2"></i>Panel de trabajo</a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
@@ -71,8 +72,9 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a class="brand-link">
-                <span class="brand-text font-weight-light">SiiTickets</span>
+            <a class="brand-link" href="{% url 'view_control_panel' %}">
+                <span class="brand-image img-circle elevation-2" style="opacity:.95; display:flex; align-items:center; justify-content:center; background:#e8f1ff; color:#1648a0; font-weight:800; width:34px; height:34px; margin-left:.7rem;">S</span>
+                <span class="brand-text">SiiTickets <small>ISHIDA SOFTWARE</small></span>
             </a>
 
             <!-- Sidebar -->
@@ -91,7 +93,7 @@
                 <!-- SidebarSearch Form -->
                 <div class="form-inline">
                     <div class="input-group" data-widget="sidebar-search">
-                        <input class="form-control form-control-sidebar" type="search" placeholder="Search"
+                        <input class="form-control form-control-sidebar" type="search" placeholder="Buscar en el menú…"
                             aria-label="Search">
                         <div class="input-group-append">
                             <button class="btn btn-sidebar">
@@ -276,17 +278,17 @@
         </aside>
 
         <!-- Content Wrapper -->
-        <div class="content-wrapper" style="overflow-y: auto; max-height: 490px;">
+        <div class="content-wrapper">
             <div class="content">
                 {% block content %}{% endblock %}
             </div>
         </div>
 
         <footer class="main-footer">
-            <strong>Copyright &copy; 2023-2024 <a href="https://ishidasoftware.com/">IshidaSoftware</a>.</strong>
-            All rights reserved.
+            <strong>Copyright &copy; 2023-2026 <a href="https://ishidasoftware.com/">IshidaSoftware</a>.</strong>
+            Todos los derechos reservados.
             <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 3.2
+                <b>Versión</b> 4.0 · UI 2026
             </div>
         </footer>
         <!-- Scripts comunes -->
