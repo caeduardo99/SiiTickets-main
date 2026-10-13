@@ -30,7 +30,7 @@
         href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
 
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
-    <link rel="stylesheet" href="{% static 'dist/css/ui-modern-2026.css' %}?v=20261013-3">
+    <link rel="stylesheet" href="{% static 'dist/css/ui-modern-2026.css' %}?v=20261013-4">
 
 
 </head>
@@ -322,6 +322,27 @@
 <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 <script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+
+<script>
+    // Configuración común de notificaciones para todas las pantallas.
+    if (window.toastr) {
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            newestOnTop: true,
+            preventDuplicates: true,
+            positionClass: "toast-top-right",
+            timeOut: 3500,
+            extendedTimeOut: 1200,
+            showDuration: 220,
+            hideDuration: 180,
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
+    }
+</script>
 
 <script>
     $(function () {
