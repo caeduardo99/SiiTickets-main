@@ -126,3 +126,182 @@ body.siitickets-modern .content hr { border-top:1px solid #e2e9f4; margin:1.25re
  body.siitickets-modern .main-sidebar { z-index:1040; }
  body.siitickets-modern .content-wrapper { min-height:calc(100vh - 56px); }
 }
+
+
+/* =========================================================
+   SiiTickets · sistema visual integral 2026
+   Capa global para todas las pantallas; no altera formularios,
+   nombres de campos, rutas Django ni comportamiento JS.
+   ========================================================= */
+:root {
+  --si-primary:#3157d5;
+  --si-primary-dark:#2446bb;
+  --si-ink:#17233c;
+  --si-muted:#73819a;
+  --si-bg:#f4f7fc;
+  --si-line:#e5ebf4;
+  --si-card:#ffffff;
+  --si-success:#16866b;
+  --si-warning:#b97712;
+  --si-danger:#d6475b;
+  --si-radius:16px;
+}
+html { scroll-behavior:smooth; }
+body.siitickets-modern { -webkit-font-smoothing:antialiased; }
+.siitickets-modern ::selection { background:rgba(49,87,213,.16); color:var(--si-ink); }
+.siitickets-modern a { transition:color .16s ease,background-color .16s ease; }
+.siitickets-modern a:focus-visible,
+.siitickets-modern button:focus-visible,
+.siitickets-modern input:focus-visible,
+.siitickets-modern select:focus-visible,
+.siitickets-modern textarea:focus-visible { outline:3px solid rgba(49,87,213,.28); outline-offset:2px; }
+
+/* Shell, marca y navegación */
+.siitickets-modern .main-sidebar { overflow-x:hidden; }
+.siitickets-modern .sidebar { scrollbar-width:thin; scrollbar-color:#344565 transparent; }
+.siitickets-modern .sidebar::-webkit-scrollbar { width:6px; }
+.siitickets-modern .sidebar::-webkit-scrollbar-thumb { background:#344565; border-radius:99px; }
+.siitickets-modern .brand-link { gap:.15rem; }
+.siitickets-modern .brand-link .brand-image { float:none; margin:0 .4rem 0 .15rem!important; }
+.siitickets-modern .main-header .navbar-nav .nav-link { min-height:44px; display:flex; align-items:center; }
+.siitickets-modern .main-header .fa-bars { font-size:1.08rem; }
+.siitickets-modern .nav-sidebar .nav-header { white-space:normal; }
+.siitickets-modern .nav-sidebar .nav-link p { white-space:normal; line-height:1.35; }
+.siitickets-modern .nav-sidebar .nav-link:focus-visible { outline-color:rgba(255,255,255,.65); }
+.siitickets-modern .content-wrapper { min-width:0; }
+.siitickets-modern .content { min-width:0; }
+.siitickets-modern .content-header .container-fluid { padding-left:0; padding-right:0; }
+.siitickets-modern .content-header h1 { font-size:1.8rem; }
+.siitickets-modern .content-header h2 { margin-bottom:.35rem; }
+.siitickets-modern .content-header p,
+.siitickets-modern .content-header .text-muted { color:var(--si-muted)!important; }
+
+/* Paneles, métricas y contenido */
+.siitickets-modern .card { min-width:0; }
+.siitickets-modern .card-header { display:flex; align-items:center; flex-wrap:wrap; gap:.65rem; }
+.siitickets-modern .card-header > .card-title { float:none; margin:0; }
+.siitickets-modern .card-header .card-tools { margin-left:auto; }
+.siitickets-modern .card-body > h3:first-child,
+.siitickets-modern .card-body > h4:first-child { margin-top:0; }
+.siitickets-modern .small-box .icon { opacity:.18; transition:transform .2s ease,opacity .2s ease; }
+.siitickets-modern .small-box:hover .icon { opacity:.28; transform:scale(1.06); }
+.siitickets-modern .info-box { border:1px solid var(--si-line); border-radius:15px; box-shadow:0 5px 18px rgba(34,53,91,.045); }
+.siitickets-modern .info-box .info-box-icon { border-radius:13px; margin:8px; width:56px; }
+.siitickets-modern .description-block { padding:.6rem .3rem; }
+.siitickets-modern .description-block .description-header { color:var(--si-ink); font-family:'Manrope',sans-serif; font-weight:800; }
+.siitickets-modern .list-group { border-radius:12px; overflow:hidden; }
+.siitickets-modern .list-group-item { border-color:#edf1f7; padding:.8rem 1rem; }
+.siitickets-modern .list-group-item-action:hover { background:#f7f9ff; }
+.siitickets-modern .callout { border-radius:0 12px 12px 0; box-shadow:0 3px 12px rgba(34,53,91,.035); }
+
+/* Formularios de soporte, desarrollo, empresas y usuarios */
+.siitickets-modern .form-group { margin-bottom:1rem; }
+.siitickets-modern .form-control,
+.siitickets-modern .custom-select,
+.siitickets-modern .custom-file-label { font-size:.92rem; }
+.siitickets-modern .form-control::placeholder { color:#9aa5b8; }
+.siitickets-modern .form-control:disabled,
+.siitickets-modern .form-control[readonly],
+.siitickets-modern .custom-select:disabled { background:#f5f7fb; color:#7d899e; }
+.siitickets-modern .input-group-text { background:#f6f8fc; color:#65738d; border-color:#dfe6f0; border-radius:9px; }
+.siitickets-modern .input-group > .form-control:not(:first-child),
+.siitickets-modern .input-group > .custom-select:not(:first-child) { border-top-left-radius:0; border-bottom-left-radius:0; }
+.siitickets-modern .input-group > .form-control:not(:last-child),
+.siitickets-modern .input-group > .custom-select:not(:last-child) { border-top-right-radius:0; border-bottom-right-radius:0; }
+.siitickets-modern .custom-file-label { border-radius:9px; border-color:#dfe6f0; }
+.siitickets-modern .custom-file-label::after { border-radius:0 8px 8px 0; }
+.siitickets-modern .form-text,
+.siitickets-modern .help-block { color:var(--si-muted); font-size:.8rem; }
+.siitickets-modern .invalid-feedback { font-size:.8rem; }
+.siitickets-modern .form-check-input { accent-color:var(--si-primary); }
+.siitickets-modern .select2-container { max-width:100%; }
+.siitickets-modern .select2-container--default .select2-selection--multiple { min-height:39px; border:1px solid #dfe6f0; border-radius:9px; padding:2px 5px; }
+.siitickets-modern .select2-container--default.select2-container--focus .select2-selection--multiple { border-color:#8ea6fb; box-shadow:0 0 0 .2rem rgba(49,87,213,.10); }
+.siitickets-modern .select2-dropdown { border-color:#dfe6f0; border-radius:9px; overflow:hidden; box-shadow:0 10px 25px rgba(30,45,78,.1); }
+.siitickets-modern .select2-results__option { padding:.55rem .75rem; }
+
+/* Tablas, filtros, paginación y exportación */
+.siitickets-modern .table-responsive { border:1px solid #edf1f7; background:#fff; }
+.siitickets-modern .table { margin-bottom:0; }
+.siitickets-modern .table thead th { white-space:nowrap; }
+.siitickets-modern .table td { overflow-wrap:anywhere; }
+.siitickets-modern .table td .btn + .btn { margin-left:.2rem; }
+.siitickets-modern .table-striped tbody tr:nth-of-type(odd) { background-color:#fbfcff; }
+.siitickets-modern .dataTables_wrapper { color:#6e7b93; font-size:.86rem; }
+.siitickets-modern .dataTables_wrapper .dataTables_filter input,
+.siitickets-modern .dataTables_wrapper .dataTables_length select { border:1px solid #dfe6f0; border-radius:8px; padding:.35rem .55rem; background:#fff; }
+.siitickets-modern .dataTables_wrapper .dataTables_filter input:focus { outline:0; border-color:#8ea6fb; box-shadow:0 0 0 .18rem rgba(49,87,213,.10); }
+.siitickets-modern .dataTables_wrapper .page-item .page-link { border:0; border-radius:8px; margin:0 2px; color:#566681; }
+.siitickets-modern .dataTables_wrapper .page-item.active .page-link { background:var(--si-primary); color:#fff; }
+.siitickets-modern .dt-buttons .btn { margin:0 .3rem .4rem 0; }
+.siitickets-modern .table .badge,
+.siitickets-modern .badge { font-weight:700; letter-spacing:.1px; padding:.38em .62em; border-radius:7px; }
+
+/* Estados, avisos y feedback */
+.siitickets-modern .badge-success { background:#dff6ed; color:#087654; }
+.siitickets-modern .badge-warning { background:#fff0d4; color:#8b5a08; }
+.siitickets-modern .badge-danger { background:#ffe4e8; color:#ae2b40; }
+.siitickets-modern .badge-info { background:#e2ebff; color:#274ab4; }
+.siitickets-modern .badge-secondary { background:#edf0f5; color:#5d6980; }
+.siitickets-modern .alert-success { background:#e8f8f1; color:#12694f; }
+.siitickets-modern .alert-warning { background:#fff5df; color:#805714; }
+.siitickets-modern .alert-danger { background:#fff0f1; color:#9f2938; }
+.siitickets-modern .alert-info { background:#edf4ff; color:#244a9c; }
+.siitickets-modern #toast-container > div { border-radius:12px; box-shadow:0 12px 30px rgba(24,39,72,.16); opacity:.98; }
+
+/* Navegación por pestañas y acciones */
+.siitickets-modern .nav-tabs { border-bottom:1px solid var(--si-line); gap:.25rem; }
+.siitickets-modern .nav-tabs .nav-link { border:1px solid transparent; border-radius:10px 10px 0 0; color:#71809a; font-weight:700; padding:.75rem 1rem; }
+.siitickets-modern .nav-tabs .nav-link:hover { color:var(--si-primary); background:#f7f9ff; }
+.siitickets-modern .nav-tabs .nav-link.active { color:var(--si-primary); background:#fff; border-color:var(--si-line) var(--si-line) #fff; }
+.siitickets-modern .btn-group > .btn { box-shadow:none; }
+.siitickets-modern .btn-outline-primary { color:var(--si-primary); border-color:#cbd6fb; }
+.siitickets-modern .btn-outline-primary:hover { color:#fff; background:var(--si-primary); border-color:var(--si-primary); }
+.siitickets-modern .btn-outline-secondary { color:#64728b; border-color:#dfe6f0; }
+.siitickets-modern .btn-outline-secondary:hover { background:#eef2f8; color:#263653; border-color:#d4dce9; }
+.siitickets-modern .btn-danger { background:#d6475b; border-color:#d6475b; }
+.siitickets-modern .btn-warning { background:#f0b84d; border-color:#f0b84d; color:#4f3910; }
+
+/* Modales, ventanas de detalle y elementos flotantes */
+.siitickets-modern .modal-header { padding:1rem 1.25rem; }
+.siitickets-modern .modal-title { font-family:'Manrope',sans-serif; font-weight:800; color:var(--si-ink); }
+.siitickets-modern .modal-body { max-height:calc(100vh - 190px); overflow-y:auto; }
+.siitickets-modern .modal-footer { background:#fbfcff; border-top:1px solid var(--si-line); }
+.siitickets-modern .tooltip .tooltip-inner { border-radius:7px; padding:.45rem .65rem; }
+.siitickets-modern .dropdown-divider { border-color:#edf1f7; }
+.siitickets-modern .progress { height:8px; border-radius:99px; background:#e9eef7; overflow:hidden; }
+.siitickets-modern .progress-bar { border-radius:99px; }
+
+/* Páginas largas: diarios, detalles, credenciales y reportes */
+.siitickets-modern pre,
+.siitickets-modern code { overflow-wrap:anywhere; }
+.siitickets-modern .ticket-meta,
+.siitickets-modern .text-muted { color:var(--si-muted)!important; }
+.siitickets-modern .border,
+.siitickets-modern .border-top,
+.siitickets-modern .border-bottom { border-color:var(--si-line)!important; }
+.siitickets-modern .shadow-sm { box-shadow:0 4px 16px rgba(34,53,91,.055)!important; }
+.siitickets-modern .rounded { border-radius:10px!important; }
+.siitickets-modern .rounded-lg { border-radius:14px!important; }
+.siitickets-modern .main-footer { line-height:1.7; }
+
+/* Accesibilidad y pantallas pequeñas */
+@media (max-width:991.98px) {
+  .siitickets-modern .content-header h1 { font-size:1.5rem; }
+  .siitickets-modern .card-header { align-items:flex-start; }
+  .siitickets-modern .card-header .card-tools { width:100%; margin-left:0; }
+  .siitickets-modern .table-responsive { -webkit-overflow-scrolling:touch; }
+}
+@media (max-width:575.98px) {
+  html { font-size:13px; }
+  .siitickets-modern .main-header { min-height:56px; }
+  .siitickets-modern .content-header h1 { font-size:1.35rem; }
+  .siitickets-modern .content-header h2 { font-size:1.35rem!important; }
+  .siitickets-modern .card-header { padding:.85rem .9rem; }
+  .siitickets-modern .card-body { padding:.9rem; }
+  .siitickets-modern .btn { max-width:100%; }
+  .siitickets-modern .modal-dialog { margin:.5rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .siitickets-modern *, .siitickets-modern *::before, .siitickets-modern *::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+}
