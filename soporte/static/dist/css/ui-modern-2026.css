@@ -334,3 +334,227 @@ body.siitickets-modern { -webkit-font-smoothing:antialiased; }
   #toast-container { left:12px; right:12px; width:auto; }
   #toast-container > .toast { width:100%; max-width:none; margin-bottom:9px; }
 }
+
+
+/* =========================================================
+   Soporte: experiencia de tickets empresarial
+   Alcance local: solo la cabecera y la pantalla de soporte.
+   ========================================================= */
+.siitickets-modern .support-page-header {
+  padding: 1.35rem 1.5rem .35rem;
+}
+.siitickets-modern .support-page-header h3 {
+  display:flex;
+  align-items:center;
+  margin:0 0 .3rem;
+  color:var(--si-ink);
+  font-family:'Manrope',sans-serif;
+  font-size:1.65rem;
+  font-weight:800;
+  letter-spacing:-.045em;
+}
+.siitickets-modern .support-page-header h3 .fas {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  margin-right:.8rem!important;
+  border:1px solid #dce5ff;
+  border-radius:13px;
+  background:#edf2ff;
+  color:var(--si-primary);
+  font-size:1.1rem;
+}
+.siitickets-modern .support-page-subtitle {
+  margin:0 0 .65rem 3.2rem;
+  color:var(--si-muted);
+  font-size:.91rem;
+  line-height:1.55;
+}
+.siitickets-modern .support-page {
+  padding: .75rem 1.5rem 1.75rem;
+}
+.siitickets-modern .support-page #myTabs {
+  display:flex;
+  flex-wrap:wrap;
+  gap:.4rem;
+  padding:.35rem;
+  border:1px solid var(--si-line);
+  border-radius:14px;
+  background:#f7f9fd;
+}
+.siitickets-modern .support-page #myTabs .nav-item { margin:0; }
+.siitickets-modern .support-page #myTabs .nav-link {
+  display:flex;
+  align-items:center;
+  min-height:42px;
+  padding:.65rem .95rem;
+  border:1px solid transparent;
+  border-radius:10px;
+  color:#64728b;
+  font-size:.88rem;
+  font-weight:700;
+  transition:background .16s ease,color .16s ease,box-shadow .16s ease;
+}
+.siitickets-modern .support-page #myTabs .nav-link:hover {
+  border-color:#e1e8f5;
+  background:#fff;
+  color:var(--si-primary);
+}
+.siitickets-modern .support-page #myTabs .nav-link.active {
+  border-color:#e0e7fb;
+  background:#fff;
+  color:var(--si-primary);
+  box-shadow:0 3px 10px rgba(34,53,91,.07);
+}
+.siitickets-modern .support-page #myTabs .nav-link .fas { font-size:.9rem; }
+.siitickets-modern .support-page .tab-content { padding-top:.6rem; }
+.siitickets-modern .support-page .card {
+  overflow:hidden;
+  border:1px solid var(--si-line);
+  border-radius:15px;
+  box-shadow:0 5px 18px rgba(34,53,91,.045);
+}
+.siitickets-modern .support-page .support-card-header {
+  display:flex;
+  align-items:center;
+  min-height:54px;
+  padding:.9rem 1.15rem;
+  border-bottom:1px solid var(--si-line);
+  background:#fff;
+  color:var(--si-ink);
+  font-family:'Manrope',sans-serif;
+  font-size:.95rem;
+  font-weight:800;
+}
+.siitickets-modern .support-page .support-card-header .fas {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:30px;
+  height:30px;
+  margin-right:.65rem!important;
+  border-radius:9px;
+  background:#edf2ff;
+  color:var(--si-primary);
+  font-size:.85rem;
+}
+.siitickets-modern .support-page .card-body { padding:1.2rem; }
+.siitickets-modern .support-page label {
+  margin-bottom:.42rem;
+  color:#35435c;
+  font-size:.83rem;
+  font-weight:700;
+}
+.siitickets-modern .support-page .form-control,
+.siitickets-modern .support-page .custom-select,
+.siitickets-modern .support-page .select2-container--default .select2-selection--single {
+  min-height:40px;
+  border-color:#dfe6f0;
+  border-radius:9px;
+  background-color:#fff;
+  color:var(--si-ink);
+  box-shadow:none;
+  font-size:.88rem;
+}
+.siitickets-modern .support-page textarea.form-control { min-height:92px; }
+.siitickets-modern .support-page .form-control:focus,
+.siitickets-modern .support-page .custom-select:focus {
+  border-color:#9bb0fb;
+  box-shadow:0 0 0 3px rgba(49,87,213,.10);
+}
+.siitickets-modern .support-page .btn {
+  min-height:38px;
+  border-radius:9px;
+  font-size:.84rem;
+  font-weight:700;
+  letter-spacing:.005em;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+}
+.siitickets-modern .support-page .btn:not(:disabled):hover {
+  transform:translateY(-1px);
+  box-shadow:0 4px 10px rgba(30,48,82,.10);
+}
+.siitickets-modern .support-page .btn-success {
+  background:#17795f;
+  border-color:#17795f;
+}
+.siitickets-modern .support-page .support-list-toolbar {
+  align-items:flex-end;
+  margin:0 0 .9rem;
+  padding:1rem;
+  border:1px solid var(--si-line);
+  border-radius:13px;
+  background:#fff;
+}
+.siitickets-modern .support-page .support-list-toolbar .form-group { margin-bottom:0; }
+.siitickets-modern .support-page .support-search-label {
+  display:block;
+  margin-bottom:.45rem;
+  color:#53617a;
+  font-size:.78rem;
+  font-weight:800;
+  letter-spacing:.025em;
+}
+.siitickets-modern .support-page .support-list-toolbar input {
+  min-height:41px;
+  padding-left:.85rem;
+  background:#fbfcff;
+}
+.siitickets-modern .support-page .support-sort-button {
+  min-height:41px;
+  background:#fff;
+}
+.siitickets-modern .support-page .support-table-wrap {
+  max-width:100%;
+  border:1px solid var(--si-line);
+  border-radius:11px;
+  background:#fff;
+}
+.siitickets-modern .support-page .support-table {
+  min-width:850px;
+  margin-bottom:0;
+  color:#35435c;
+  font-size:.82rem;
+}
+.siitickets-modern .support-page .support-table thead th {
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:.8rem .75rem;
+  border-top:0;
+  border-bottom:1px solid #e1e7f1;
+  background:#f5f7fc;
+  color:#53617a;
+  font-size:.73rem;
+  font-weight:800;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.siitickets-modern .support-page .support-table tbody td {
+  padding:.72rem .75rem;
+  border-top:1px solid #edf1f7;
+  vertical-align:middle;
+}
+.siitickets-modern .support-page .support-table tbody tr { transition:background .12s ease; }
+.siitickets-modern .support-page .support-table tbody tr:hover { background:#f7f9ff; }
+.siitickets-modern .support-page .support-table .btn {
+  min-height:31px;
+  padding:.35rem .6rem;
+  font-size:.76rem;
+}
+.siitickets-modern .support-page .tab-pane > .card { margin-top:.25rem; }
+@media (max-width:767.98px) {
+  .siitickets-modern .support-page-header { padding:1rem 1rem .25rem; }
+  .siitickets-modern .support-page-header h3 { font-size:1.4rem; }
+  .siitickets-modern .support-page-subtitle { margin-left:0; font-size:.84rem; }
+  .siitickets-modern .support-page { padding:.65rem .75rem 1.25rem; }
+  .siitickets-modern .support-page #myTabs { gap:.25rem; }
+  .siitickets-modern .support-page #myTabs .nav-link { padding:.6rem .7rem; font-size:.8rem; }
+  .siitickets-modern .support-page .support-list-toolbar { padding:.8rem; }
+  .siitickets-modern .support-page .support-list-toolbar .col-md-10,
+  .siitickets-modern .support-page .support-list-toolbar .col-md-2 { flex:0 0 100%; max-width:100%; }
+  .siitickets-modern .support-page .support-sort-button { margin-top:.65rem; }
+}
