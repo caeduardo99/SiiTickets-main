@@ -89,3 +89,40 @@ body.siitickets-modern { font-family:'DM Sans',system-ui,-apple-system,'Segoe UI
  .siitickets-modern .card-body { padding:1rem; }
  .siitickets-modern .content-header h2 { font-size:1.4rem; }
 }
+
+
+/* Ajustes visibles de la renovación 2026 */
+body.siitickets-modern { background:#f3f6fc!important; }
+body.siitickets-modern .content-wrapper { background:#f3f6fc!important; }
+body.siitickets-modern .content-header { padding-top:1.6rem!important; }
+body.siitickets-modern .content-header h2 { font-size:1.9rem!important; letter-spacing:-.8px; }
+body.siitickets-modern .card { background:#fff; border:1px solid #e2e9f4!important; border-radius:18px!important; box-shadow:0 8px 28px rgba(28,45,83,.065)!important; }
+body.siitickets-modern .card:hover { border-color:#d4def1!important; }
+body.siitickets-modern #cardTicketsPendientes,
+body.siitickets-modern #cardTicketsCompletos,
+body.siitickets-modern #cardTicketsProcess { min-height:150px; cursor:pointer; transition:transform .2s ease,box-shadow .2s ease; }
+body.siitickets-modern #cardTicketsPendientes:hover,
+body.siitickets-modern #cardTicketsCompletos:hover,
+body.siitickets-modern #cardTicketsProcess:hover { transform:translateY(-4px); box-shadow:0 16px 34px rgba(28,45,83,.12)!important; }
+body.siitickets-modern #cardTicketsPendientes { border-top:4px solid #e8a23a!important; }
+body.siitickets-modern #cardTicketsCompletos { border-top:4px solid #19a581!important; }
+body.siitickets-modern #cardTicketsProcess { border-top:4px solid #4169ed!important; }
+body.siitickets-modern #cardTicketsPendientes h4,
+body.siitickets-modern #cardTicketsCompletos h4,
+body.siitickets-modern #cardTicketsProcess h4 { font-family:'Manrope',sans-serif; font-size:2rem; font-weight:800; letter-spacing:-1px; }
+body.siitickets-modern #cardTicketsPendientes svg { fill:#e8a23a; }
+body.siitickets-modern #cardTicketsCompletos svg { fill:#19a581; }
+body.siitickets-modern #cardTicketsProcess svg { fill:#4169ed; }
+body.siitickets-modern .table-responsive { border-radius:12px; }
+body.siitickets-modern .table { background:#fff; }
+body.siitickets-modern .table thead th { padding:.9rem .8rem; }
+body.siitickets-modern .table tbody td { padding:.75rem .8rem; }
+body.siitickets-modern .main-footer { margin-top:1rem; }
+body.siitickets-modern .btn-dark { background:#263653; border-color:#263653; }
+body.siitickets-modern .btn-info { background:#3157d5; border-color:#3157d5; color:#fff; }
+body.siitickets-modern .btn-info:hover { background:#203ea5; border-color:#203ea5; color:#fff; }
+body.siitickets-modern .content hr { border-top:1px solid #e2e9f4; margin:1.25rem 0; }
+@media (max-width:991.98px) {
+ body.siitickets-modern .main-sidebar { z-index:1040; }
+ body.siitickets-modern .content-wrapper { min-height:calc(100vh - 56px); }
+}
