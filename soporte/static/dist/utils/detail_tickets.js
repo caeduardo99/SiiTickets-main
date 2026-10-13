@@ -1200,123 +1200,161 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     var numHorasGenerales = inputNumHorasTrabajoTicketGeneral.value;
 
-    var objGeneratePdf = {
-      content: [
-        { image: imageUrl, width: 100, height: 100, alignment: "center" },
-        {
-          text: `Ticket número: 000-${numTicket}`,
-          fontSize: 18,
-          alignment: "center",
-          bold: true,
-          margin: [0, 15, 0, 0],
-        },
-        {
-          text: "Asunto",
-          fontSize: 12,
-          bold: true,
-          margin: [0, 15, 0, 0],
-        },
-        {
-          text: asunto,
-          fontSize: 11,
-          margin: [0, 8, 0, 0],
-        },
-        {
-          text: "Detalle ",
-          fontSize: 12,
-          bold: true,
-          margin: [0, 15, 0, 0],
-        },
-        {
-          text: comentario,
-          fontSize: 11,
-          margin: [0, 8, 0, 0],
-        },
-        {
-          text: "Detalles del ticket",
-          fontSize: 12,
-          bold: true,
-          margin: [0, 15, 0, 0],
-        },
-        {
-          ul: [
-            `Solicitante: ${solicitante}`,
-            `Agente Administrador del proyecto: ${
-              agente == null ? "Sin asignar" : agente
-            }`,
-            `Fecha de solicitud: ${fechaCreacion}`,
-            !reportClient ? `Fecha estimada de finalización: ${fechaEstimada}`: "",
-            !reportClient ? `Fecha de finalización del ticket: ${fechaFinalizacion}`: "",
-            `Horas de Soporte: ${numHorasGenerales} horas.`,
-            `Este requerimiento necesita facturación: ${
-              facturacionText == true ? "Si" : "No"
-            }`,
-          ],
-          margin: [0, 5, 0, 0], // Ajusta el margen superior según tus necesidades,
-          fontSize: 11,
-        },
-        {
-          text: "Actividades",
-          fontSize: 12,
-          bold: true,
-          margin: [0, 15, 0, 0],
-        },
-        {
-          ul: arrayActivities.map((activity) => [
-            `Actividad: ${activity.descripcion}
-            Hecho por: ${activity.agente_actividad_nombre}.
-            ${
-              razonSocial != nombreEmpresaSolicitante && !reportClient
-                ? `Minutos trabajados por el agente: ${activity.minutosTrabajados} minutos.
-                FIS: ${activity.fechainicio} FFS: ${activity.fechafinal}.`
-                : ""
-            }
-            `,
-            {
-              image: activity.imagen_actividades,
-              width: 430,
-              fit: [400, 370],
-              alignment: "center",
-            },
-          ]),
-          margin: [0, 5, 10, 10],
-          fontSize: 11,
-        },
-        {
-          text: "Causante del error - comentario del agente administrador",
-          fontSize: 12,
-          bold: true,
-          margin: [0, 15, 0, 0],
-        },
-        {
-          text: causaError,
-          fontSize: 11,
-          margin: [0, 8, 0, 0],
-        },
-      ],
-      footer: function (currentPage, pageCount) {
-        return [
+    var contenidoPdf = [
+      {
+        columns: [
+          { image: imageUrl, width: 68, height: 68 },
           {
-            text: `Reporte generado por ${razonSocial} el día ${fechaFormateadaActualReport}`,
-            fontSize: 8,
-            italics: true,
-            margin: [35, 5, 0, 0],
-            paddin: [10, 0, 0, 0],
-          },
-          {
-            text: 'El valor a facturar será por hora técnica.',
-            fontSize: 8,
-            bold: true,
-            margin: [35, 2, 0, 0],
-            paddin: [5, 0, 0, 0],
-          },
-          {
-            text: `Página ${currentPage} de ${pageCount}`,
+            width: "*",
+            stack: [
+              { text: "ISHIDA SOFTWARE", style: "companyName" },
+              { text: "REPORTE DE ATENCIÓN DE SOPORTE", style: "documentTitle" },
+              { text: `Ticket N.° 000-${numTicket}`, style: "ticketNumber" }
+            ],
             alignment: "right",
-            margin: [0, 0, 35, 0],
-          },
-        ];
+            margin: [0, 5, 0, 0]
+          }
+        ],
+        columnGap: 14,
+        margin: [0, 0, 0, 18]
       },
+      {
+        table: {
+          widths: ["*"],
+          body: [[
+            {
+              stack: [
+                { text: "ASUNTO", style: "sectionLabel" },
+                { text: asunto || "Sin asunto registrado", style: "subject" }
+              ],
+              fillColor: "#F1F5F9",
+              margin: [12, 10, 12, 10]
+            }
+          ]]
+        },
+        layout: { hLineColor: () => "#D9E2EC", vLineColor: () => "#D9E2EC" },
+        margin: [0, 0, 0, 14]
+      },
+      { text: "DETALLE DE LA SOLICITUD", style: "sectionTitle" },
+      { text: comentario || "Sin detalle registrado.", style: "bodyText", margin: [0, 0, 0, 14] },
+      { text: "INFORMACIÓN DEL TICKET", style: "sectionTitle" },
+      {
+        table: {
+          headerRows: 0,
+          widths: ["34%", "*"],
+          body: [
+            [{ text: "Solicitante", style: "tableLabel" }, { text: solicitante || "No registrado", style: "tableValue" }],
+            [{ text: "Agente encargado", style: "tableLabel" }, { text: agente || "Sin asignar", style: "tableValue" }],
+            [{ text: "Fecha de solicitud", style: "tableLabel" }, { text: fechaCreacion || "No registrada", style: "tableValue" }],
+            ...(!reportClient ? [
+              [{ text: "Finalización estimada", style: "tableLabel" }, { text: fechaEstimada || "No registrada", style: "tableValue" }],
+              [{ text: "Fecha de cierre", style: "tableLabel" }, { text: fechaFinalizacion || "No registrada", style: "tableValue" }]
+            ] : []),
+            [{ text: "Horas de soporte", style: "tableLabel" }, { text: `${numHorasGenerales || "0"} horas`, style: "tableValue" }],
+            [{ text: "¿Requiere facturación?", style: "tableLabel" }, { text: facturacionText == true ? "Sí" : "No", style: "tableValue" }]
+          ]
+        },
+        layout: {
+          hLineWidth: () => 0.7,
+          vLineWidth: () => 0,
+          hLineColor: () => "#D9E2EC",
+          paddingLeft: () => 8,
+          paddingRight: () => 8,
+          paddingTop: () => 7,
+          paddingBottom: () => 7
+        },
+        margin: [0, 0, 0, 14]
+      },
+      { text: "ACTIVIDADES REALIZADAS", style: "sectionTitle" }
+    ];
+
+    if (Array.isArray(arrayActivities) && arrayActivities.length) {
+      arrayActivities.forEach((activity, index) => {
+        contenidoPdf.push({
+          table: {
+            widths: ["*"],
+            body: [[{
+              stack: [
+                { text: `Actividad ${index + 1}`, style: "activityTitle" },
+                { text: activity.descripcion || "Sin descripción", style: "bodyText", margin: [0, 4, 0, 5] },
+                { text: `Responsable: ${activity.agente_actividad_nombre || "No asignado"}`, style: "smallText" },
+                ...(!reportClient && razonSocial != nombreEmpresaSolicitante ? [
+                  { text: `Tiempo trabajado: ${activity.minutosTrabajados == null ? "No registrado" : activity.minutosTrabajados + " minutos"}`, style: "smallText", margin: [0, 3, 0, 0] },
+                  { text: `Inicio: ${activity.fechainicio || "No registrado"}    Finalización: ${activity.fechafinal || "No registrada"}`, style: "smallText", margin: [0, 3, 0, 0] }
+                ] : []),
+                ...(activity.imagen_actividades && typeof activity.imagen_actividades === "string" && activity.imagen_actividades.startsWith("data:image/") ? [
+                  { image: activity.imagen_actividades, fit: [440, 280], alignment: "center", margin: [0, 10, 0, 2] }
+                ] : [])
+              ]
+            }]]
+          },
+          layout: {
+            hLineWidth: () => 0.7,
+            vLineWidth: () => 0,
+            hLineColor: () => "#D9E2EC",
+            paddingLeft: () => 10,
+            paddingRight: () => 10,
+            paddingTop: () => 9,
+            paddingBottom: () => 9
+          },
+          margin: [0, 0, 0, 9],
+          unbreakable: true
+        });
+      });
+    } else {
+      contenidoPdf.push({ text: "No se registraron actividades para este ticket.", style: "mutedText", margin: [0, 0, 0, 14] });
+    }
+
+    contenidoPdf.push(
+      { text: "CAUSA DEL ERROR / OBSERVACIONES DEL AGENTE", style: "sectionTitle", margin: [0, 8, 0, 5] },
+      { text: causaError || "Sin observaciones registradas.", style: "bodyText" }
+    );
+
+    var objGeneratePdf = {
+      pageSize: "A4",
+      pageMargins: [42, 38, 42, 55],
+      info: {
+        title: `Reporte de soporte - Ticket 000-${numTicket}`,
+        subject: asunto || "Reporte de atención de soporte",
+        creator: "Ishida Software"
+      },
+      content: contenidoPdf,
+      styles: {
+        companyName: { fontSize: 15, bold: true, color: "#17365D", characterSpacing: 0.5 },
+        documentTitle: { fontSize: 9, bold: true, color: "#1D4E89", margin: [0, 4, 0, 5] },
+        ticketNumber: { fontSize: 10, bold: true, color: "#475569" },
+        sectionTitle: { fontSize: 10, bold: true, color: "#17365D", margin: [0, 3, 0, 7] },
+        sectionLabel: { fontSize: 8, bold: true, color: "#64748B", margin: [0, 0, 0, 4] },
+        subject: { fontSize: 13, bold: true, color: "#17365D" },
+        bodyText: { fontSize: 9, color: "#334155", lineHeight: 1.3 },
+        tableLabel: { fontSize: 8.5, bold: true, color: "#475569", fillColor: "#F8FAFC" },
+        tableValue: { fontSize: 8.5, color: "#1E293B" },
+        activityTitle: { fontSize: 9.5, bold: true, color: "#1D4E89" },
+        smallText: { fontSize: 8, color: "#64748B" },
+        mutedText: { fontSize: 9, italics: true, color: "#64748B" }
+      },
+      defaultStyle: { font: "Roboto" },
+      footer: function (currentPage, pageCount) {
+        return {
+          margin: [42, 12, 42, 0],
+          columns: [
+            {
+              text: `Generado por ${razonSocial || "Ishida Software"} · ${fechaFormateadaActualReport}`,
+              fontSize: 7,
+              color: "#64748B",
+              width: "*"
+            },
+            {
+              text: `Página ${currentPage} de ${pageCount}`,
+              alignment: "right",
+              fontSize: 7,
+              color: "#64748B",
+              width: "auto"
+            }
+          ],
+          columnGap: 10
+        };
+      }
     };
         pdfMake.createPdf(objGeneratePdf).getBlob((blob) => {
       // Crear una URL para el blob
