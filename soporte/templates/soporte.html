@@ -8,26 +8,27 @@
     <div id="datos" data-mostrar-campo="{{ mostrar_campo|safe }}"></div>
 
     <!-- Contenido específico de la página de dashboard -->
-    <section class="content-header">
+    <section class="content-header support-page-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>Soporte</h3>
+                    <h3><i class="fas fa-headset mr-2" aria-hidden="true"></i>Soporte</h3>
+                    <p class="support-page-subtitle">Administra solicitudes, da seguimiento a los casos y consulta los tickets finalizados.</p>
                 </div>
 
             </div>
         </div><!-- /.container-fluid -->
     </section>
-    <div class="content">
+    <div class="content support-page">
         <ul class="nav nav-tabs" id="myTabs">
             <li class="nav-item">
-                <a class="nav-link active" id="nuevoticket-tab" data-toggle="tab" href="#nuevoticket">Nuevo Ticket</a>
+                <a class="nav-link active" id="nuevoticket-tab" data-toggle="tab" href="#nuevoticket"><i class="fas fa-plus-circle mr-2" aria-hidden="true"></i>Nuevo ticket</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="vertickets-tab" data-toggle="tab" href="#vertickets">Tickets en proceso</a>
+                <a class="nav-link" id="vertickets-tab" data-toggle="tab" href="#vertickets"><i class="fas fa-inbox mr-2" aria-hidden="true"></i>Tickets en proceso</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="verticketsCompletos-tab" data-toggle="tab" href="#verticketsCompletos">Tickets completos</a>
+                <a class="nav-link" id="verticketsCompletos-tab" data-toggle="tab" href="#verticketsCompletos"><i class="fas fa-check-circle mr-2" aria-hidden="true"></i>Completados y anulados</a>
             </li> 
 
         </ul>
@@ -35,7 +36,7 @@
         <div class="tab-content mt-2">
             <div class="tab-pane fade show active" id="nuevoticket">
                 <div class="card mb-3">
-                    <div class="card-header bg-danger text-white">Detalles del Ticket</div>
+                    <div class="card-header support-card-header"><i class="fas fa-clipboard-list mr-2" aria-hidden="true"></i>Datos de la solicitud</div>
                     <div class="card-body">
                             <div id="formularioCliente" style="display: none;">
                                 <form class="form-group" method="post" action="{% url 'crear_ticket_soporte' %}">
@@ -179,21 +180,22 @@
             </div>
             
             <div class="tab-pane fade" id="vertickets">
-                <div class="row g-1">
+                <div class="row g-1 support-list-toolbar">
                     <div class="col-md-10">
                         <div class="form-group">
-                            <input type="text" class="form-control form-control-sm" id="buscarSolicitante" placeholder="Buscar...">
+                            <label class="support-search-label" for="buscarSolicitante"><i class="fas fa-search mr-1" aria-hidden="true"></i>Buscar tickets</label>
+                            <input type="text" class="form-control form-control-sm" id="buscarSolicitante" placeholder="Empresa, asunto o solicitante..." aria-label="Buscar tickets en proceso">
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-sm btn-dark btn-block" id="btnStateAwait">Ordenar</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-block support-sort-button" id="btnStateAwait"><i class="fas fa-sort-amount-down-alt mr-1" aria-hidden="true"></i>Ordenar</button>
                     </div>
                 </div>
                 <div class="card mb-3">
                     <div class="card-header bg-danger text-white">Detalles del Ticket</div>
                     <div class="card-body">
-                        <div class="table-responsive" style="overflow-y: auto; max-height: 380px;">
-                            <table class="table table-hover table-sm">
+                        <div class="table-responsive support-table-wrap" style="overflow-y: auto; max-height: 380px;">
+                            <table class="table table-hover table-sm support-table">
                                 <thead>
                                 <tr>
                                     <th>NumTicket</th>
@@ -216,18 +218,19 @@
             </div>
 
             <div class="tab-pane fade" id="verticketsCompletos">
-                <div class="row g-1">
+                <div class="row g-1 support-list-toolbar">
                     <div class="col-md-10">
                         <div class="form-group">
-                            <input type="text" class="form-control form-control-sm" id="buscarSolicitanteCompleto" placeholder="Buscar...">
+                            <label class="support-search-label" for="buscarSolicitanteCompleto"><i class="fas fa-search mr-1" aria-hidden="true"></i>Buscar tickets finalizados</label>
+                            <input type="text" class="form-control form-control-sm" id="buscarSolicitanteCompleto" placeholder="Empresa, asunto o solicitante..." aria-label="Buscar tickets completados o anulados">
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-sm btn-dark btn-block" id="btnStateAwaitComplete">Ordenar</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-block support-sort-button" id="btnStateAwaitComplete"><i class="fas fa-sort-amount-down-alt mr-1" aria-hidden="true"></i>Ordenar</button>
                     </div>
                 </div>
                 <div class="card mb-3">
-                    <div class="card-header bg-danger text-white">Tickets completos o anulados</div>
+                    <div class="card-header support-card-header"><i class="fas fa-archive mr-2" aria-hidden="true"></i>Tickets completados o anulados</div>
                     <div class="card-body">
                         <div class="table-responsive" style="overflow-y: auto; max-height: 380px;">
                             <table class="table table-hover table-sm">
