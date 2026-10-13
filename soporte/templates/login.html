@@ -1,95 +1,74 @@
 {% load static %}
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Log in (v2)</title>
-
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
+  <title>SiiTickets | Iniciar sesión</title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo-siiticket-removebg-preview.png' %}">
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
-  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
-
+  <link rel="stylesheet" href="{% static 'dist/css/ui-modern-2026.css' %}?v=20261013-2">
+  <style>
+    body.login-page { min-height:100vh; margin:0; display:flex; align-items:center; justify-content:center; padding:28px; overflow:auto; background:radial-gradient(circle at 15% 15%,rgba(76,112,235,.28),transparent 32%),radial-gradient(circle at 85% 85%,rgba(20,165,129,.18),transparent 28%),#101a2d!important; font-family:'DM Sans',system-ui,sans-serif; }
+    .login-shell { width:100%; max-width:980px; min-height:570px; display:grid; grid-template-columns:1fr 1fr; overflow:hidden; border-radius:28px; background:#fff; box-shadow:0 32px 100px rgba(0,0,0,.35); }
+    .login-brand { position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:48px; color:#fff; background:linear-gradient(145deg,#1a2a4a,#3157d5); }
+    .login-brand:after { content:''; position:absolute; width:300px; height:300px; right:-130px; bottom:-140px; border:1px solid rgba(255,255,255,.17); border-radius:50%; box-shadow:0 0 0 35px rgba(255,255,255,.04),0 0 0 70px rgba(255,255,255,.035); }
+    .brand-logo { width:88px; height:88px; display:grid; place-items:center; border-radius:22px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); }
+    .brand-logo img { max-width:74px; max-height:74px; object-fit:contain; }
+    .brand-heading { position:relative; z-index:1; margin:42px 0 12px; color:#fff; font-size:2.5rem; font-weight:800; line-height:1.12; letter-spacing:-1.3px; }
+    .brand-copy { position:relative; z-index:1; max-width:330px; color:#dbe5ff; line-height:1.7; }
+    .brand-foot { position:relative; z-index:1; color:#b9c8ef; font-size:.78rem; letter-spacing:.4px; }
+    .login-form-side { display:flex; flex-direction:column; justify-content:center; padding:52px; }
+    .eyebrow { color:#3157d5; font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1.8px; }
+    .login-title { margin:10px 0 8px; color:#17233c; font-size:2rem; font-weight:800; letter-spacing:-1px; }
+    .login-subtitle { margin-bottom:30px; color:#71809a; line-height:1.6; }
+    .login-form-side label { color:#34435d; font-size:.82rem; font-weight:700; }
+    .login-input { display:flex; align-items:center; gap:12px; min-height:50px; margin-bottom:18px; padding:0 15px; border:1px solid #dfe6f0; border-radius:12px; background:#fbfcff; }
+    .login-input:focus-within { border-color:#8ea6fb; box-shadow:0 0 0 4px rgba(49,87,213,.1); }
+    .login-input i { width:18px; color:#8a97ad; text-align:center; }
+    .login-input input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:#17233c; }
+    .login-submit { width:100%; min-height:50px; margin-top:8px; border:0; border-radius:12px; color:#fff; background:linear-gradient(100deg,#4169ed,#3157d5); font-weight:800; box-shadow:0 10px 20px rgba(49,87,213,.22); }
+    .login-submit:hover { background:linear-gradient(100deg,#3157d5,#203ea5); }
+    .login-social { display:flex; justify-content:center; gap:10px; margin-top:25px; }
+    .login-social a { display:grid; width:40px; height:40px; place-items:center; border:1px solid #e2e9f4; border-radius:12px; color:#53627c; background:#fff; }
+    .login-social a:hover { color:#3157d5; background:#f3f6ff; }
+    @media(max-width:720px) { body.login-page { padding:14px; } .login-shell { max-width:460px; min-height:auto; grid-template-columns:1fr; border-radius:22px; } .login-brand { padding:28px; } .brand-heading { margin-top:24px; font-size:1.8rem; } .brand-copy { display:none; } .brand-foot { margin-top:22px; } .brand-logo { width:64px; height:64px; border-radius:16px; } .brand-logo img { max-width:54px; max-height:54px; } .login-form-side { padding:30px 26px; } .login-title { font-size:1.7rem; } }
+  </style>
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <!-- /.login-logo -->
-  <div class="card card-outline card-danger">
-    <div class="card-header text-center">
-             <img src="{% static 'images/logoishida.png' %}" width="150" height="150" class="img-fluid" alt="...">
-    </div>
-    <div class="card-body">
-      <p class="login-box-msg">Inicio de Sesíon</p>
-
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-brand">
+      <div class="brand-logo"><img src="{% static 'images/logoishida.png' %}" alt="Ishida Software"></div>
+      <div>
+        <div class="eyebrow" style="color:#cbd8ff;">ISHIDA SOFTWARE</div>
+        <h1 class="brand-heading">Todo tu soporte,<br>en un solo lugar.</h1>
+        <p class="brand-copy">Gestiona solicitudes, da seguimiento a tickets y mantén organizado el trabajo de tu equipo.</p>
+      </div>
+      <div class="brand-foot">SiiTickets · Plataforma de soporte</div>
+    </section>
+    <section class="login-form-side">
+      <div class="eyebrow">Bienvenido de nuevo</div>
+      <h2 class="login-title">Iniciar sesión</h2>
+      <p class="login-subtitle">Ingresa tus credenciales para continuar al panel de trabajo.</p>
       <form action="/" method="post">
-          {% csrf_token %}
-        <div class="input-group mb-3">
-          <input name="username" id="username" type="text" class="form-control" placeholder="Usuario">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
-            </div>
-          </div>
-        </div>
-        <div class="input-group mb-3">
-          <input name="password" id="password" type="password" class="form-control" placeholder="Password">
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-
-          </div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-danger btn-block">Ingresar</button>
-          </div>
-          <!-- /.col -->
-        </div>
-      <br>
-          {% if message is not None %}
-               <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                            {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-               </div>
-          {% endif %}
-
+        {% csrf_token %}
+        <label for="username">Usuario</label>
+        <div class="login-input"><i class="fas fa-user"></i><input name="username" id="username" type="text" placeholder="Escribe tu usuario" autocomplete="username" required></div>
+        <label for="password">Contraseña</label>
+        <div class="login-input"><i class="fas fa-lock"></i><input name="password" id="password" type="password" placeholder="Escribe tu contraseña" autocomplete="current-password" required></div>
+        <button type="submit" class="login-submit">Ingresar <i class="fas fa-arrow-right ml-2"></i></button>
+        {% if message is not None %}
+        <div class="alert alert-warning mt-3" role="alert">{{ message }}</div>
+        {% endif %}
       </form>
-
-     <div class="social-auth-links text-center mt-2 mb-3">
-  <a href="https://api.whatsapp.com/send?phone=593994606970" class="btn btn-success" target="_blank">
-    <i class="fab fa-whatsapp"></i>
-  </a>
-  <a href="https://www.facebook.com/ishidasoftware" class="btn btn-primary" target="_blank">
-    <i class="fab fa-facebook"></i>
-  </a>
-  <a href="https://ishidasoftware.com/" class="btn btn-dark" target="_blank">
-    <i class="fas fa-globe"></i>
-  </a>
-</div>
-
-    </div>
-    <!-- /.card-body -->
-  </div>
-  <!-- /.card -->
-</div>
-<!-- /.login-box -->
-
-<!-- jQuery -->
-<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-
-<!-- Bootstrap 4 -->
-<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+      <div class="login-social">
+        <a href="https://api.whatsapp.com/send?phone=593994606970" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://www.facebook.com/ishidasoftware" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://ishidasoftware.com/" target="_blank" rel="noopener" aria-label="Sitio web"><i class="fas fa-globe"></i></a>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
