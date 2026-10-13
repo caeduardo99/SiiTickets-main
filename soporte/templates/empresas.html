@@ -1,0 +1,818 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<!-- Contenido específico de la página de dashboard -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h3>Empresas</h3>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Sección de crear empresas -->
+<div class="content">
+    <ul class="nav nav-tabs" id="myTabs">
+        <li class="nav-item">
+            <a class="nav-link active" id="nuevoticket-tab" data-toggle="tab" href="#nuevoticket">Nueva Empresa</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="vertickets-tab" data-toggle="tab" href="#vertickets">Empresas</a>
+        </li>
+    </ul>
+    <div class="tab-content mt-2">
+        <!-- Contenido de la pestaña Nuevo Ticket -->
+        <div class="tab-pane fade show active" id="nuevoticket">
+            <div class="card mb-3">
+                <div class="card-header bg-danger text-white">Detalles de la Nueva Empresa</div>
+                <div class="card-body">
+                    <form class="form-row" id="formCrearEmpresa" method="post" action="{% url 'crear_empresa' %}">
+                        {% csrf_token %}
+                        <div class="form-group col-md-6">
+                            <label for="nombreEmpresa">Nombre Empresa:</label>
+                            <input class="form-control" id="nombreEmpresa" name="nombreEmpresa"
+                                placeholder="Ingrese la Empresa">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="direccion">Dirección Empresa:</label>
+                            <input class="form-control" id="direccion" name="direccion"
+                                placeholder="Ingrese la Dirección de la Empresa">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="telefono">Teléfono Empresa:</label>
+                            <input class="form-control" id="telefono" name="telefono"
+                                placeholder="Ingrese el Teléfono de la Empresa">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="email">Correo Empresa:</label>
+                            <input class="form-control" id="email" name="email"
+                                placeholder="Ingrese el Correo de la Empresa">
+                        </div>
+                        <div class="form-group col-12">
+                            <button type="submit" class="btn btn-dark">Crear Empresa</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Sección de listado de empresas -->
+        <div class="tab-pane fade" id="vertickets">
+            <div class="row g-1">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="buscarSolicitanteEmpresa" placeholder="Buscar...">
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header bg-danger text-white">Detalles de la Empresa</div>
+                <div class="card-body">
+                    <div class="table-responsive" style="overflow-y: auto; max-height: 400px;">
+                        <table class="table table-hover table-sm" id="tickets-table">
+                            <thead>
+                                <tr>
+                                    <th>NumEmpresa</th>
+                                    <th>Empresa</th>
+                                    <th>Dirección</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Acciones</th>
+                                    <!-- Otros encabezados según tus campos -->
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyEmpresas">
+                                <!-- Aquí se llenarán las filas de la tabla -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Detalles de la Empresa -->
+<div class="modal fade" id="detalleEmpresaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Detalles de la Empresa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarEmpresaForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="modalNumEmpresa">Número de Empresa:</label>
+                                <input type="number" class="form-control" id="modalNumEmpresa" readonly></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombreEmpresa">Nombre Empresa:</label>
+                                <input type="text" class="form-control" id="editNombreEmpresa" name="editNombreEmpresa">
+                            </div>
+                            <div class="form-group">
+                                <label for="direccion">Dirección Empresa:</label>
+                                <input type="text" class="form-control" id="editDireccion" name="editDireccion">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono Empresa:</label>
+                                <input type="text" class="form-control" id="editTelefono" name="editTelefono">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Correo Empresa:</label>
+                                <input type="text" class="form-control" id="editEmail" name="editEmail">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4" style="margin-top: 5px;">
+                                    <button type="button" id="btnSaveChange" class="btn btn-dark btn-sm btn-block"
+                                        onclick="guardarCambiosEmpresa()">Guardar
+                                        Cambios
+                                    </button>
+                                </div>
+                                <div class="col-md-4" style="margin-top: 5px;">
+                                    <button type="button" id="btnSendAccess" class="btn btn-dark btn-sm btn-block">Enviar
+                                        credenciales</button>
+                                </div>
+                                <div class="col-md-4" style="margin-top: 5px;">
+                                    <button class="btn btn-sm btn-dark btn-block" id="btnEnviarManual" type="button">Enviar
+                                        Manual</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3>Credenciales</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="credencialesEmpresa">
+                                        <!-- Aqui van las parte de los credenciales -->
+                                        <div class="table-responsive" style="overflow-y: auto; max-height: 200px;">
+                                            <table class="table table-sm table-striped">
+                                                <thead>
+                                                    <tr>
+                                                      <th scope="col">#</th>
+                                                      <th scope="col">Nombre Equipo</th>
+                                                      <th scope="col">Tipo acceso</th>
+                                                      <th scope="col">Dirección</th>
+                                                      <th scope="col">Usuario</th> 
+                                                      <th scope="col">Contraseña</th> 
+                                                      <th scope="col">Editar</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyCredenciales">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <button id="newCredenciales" type="button" class="btn btn-sm btn-dark btn-block">Agregar nuevas credenciales</button>
+                                    <br>
+                                    <div id="createNewCredenciales" style="display: none;">
+                                        <h3>Agregar nuevas credenciales</h3>
+                                        <div class="form-group">
+                                            <label for="modalNombreMaquina">Nombre del equipo:</label>
+                                            <input type="text" class="form-control form-control-sm" id="modalNombreMaquina" name="modalNombreMaquina">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="modalDireccionEquipo">Direccion del equipo:</label>
+                                            <input type="text" class="form-control form-control-sm" id="modalDireccionEquipo" name="modalDireccionEquipo">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="modalUsuario">Usuario:</label>
+                                            <input type="text" class="form-control form-control-sm" id="modalUsuario" name="modalUsuario">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="modalPassword">contraseña:</label>
+                                            <input type="text" class="form-control form-control-sm" id="modalPassword" name="modalPassword">
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                  <label class="input-group-text" for="selectTipoAccesoModal">Tipo de acceso</label>
+                                                </div>
+                                                <select class="custom-select" id="selectTipoAccesoModal">
+                                                  <option selected>Escoger el tipo de acceso</option>
+                                                  <option value="1">Conexión a Escritorio Remoto</option>
+                                                  <option value="2">AnyDesk</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-dark btn-sm btn-block" type="button" id="btnNewAccess">Crear nuevo acceso</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para editar Credenciales -->
+<div class="modal fade" id="detalle" tabindex="-1" aria-labelledby="detallesSolicitanteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sx">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detallesSolicitanteLabel">Editar Credencial</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editarCredencial">
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="form-group col-md-12">
+                                    <label for="modalNumAcceso">Número de Acceso:</label>
+                                    <input type="text" class="form-control" id="idAcceso" name="idAcceso" disabled></input>
+                                </div>
+                            </td> 
+                            <td>
+                                <div class="form-group col-md-12">
+                                    <label for="modalNombreMaquina">Nombre del equipo:</label>
+                                    <input type="text" class="form-control" id="editNombreMaquina" name="editNombreMaquina"></input>
+                                </div> 
+                            </td> 
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="form-group col-md-12">
+                                    <label for="modalDireccionEquipo">Direccion del equipo:</label>
+                                    <input type="text" class="form-control" id="editDireccionEquipo"
+                                        name="editDireccionEquipo"></input>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-group col-md-12">
+                                    <label for="modalUsuario">Usuario:</label>
+                                    <input type="text" class="form-control" id="editUsuario" name="editUsuario"></input>
+                                </div>
+                            </th>
+                        </tr> 
+                        <tr> 
+                            <th>
+                                <div class="form-group col-md-12">
+                                    <label for="modalPassword">contraseña:</label>
+                                    <input type="text" class="form-control" id="editContrasena" name="editContrasena"></input>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="form-group col-md-12">
+                                    <label for="modalPassword">Tipo de acceso:</label>
+                                    <select class="custom-select" id="editAcceso" name="editAcceso">
+                                    <option selected>Escoger el tipo de acceso</option>
+                                    {% for credencial in resultado_tipo_acceso_data%}
+                                    <option value="{{ credencial.id }}">{{credencial.descripcion}}</option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                            </th>
+                        </tr> 
+                    </table> 
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSaveChange2" class="btn btn-dark btn-sm btn-block"
+                    onclick="actualizarCredenciales()">Guardar
+                    Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
+<script src="../static/dist/utils/soporte.js"></script>
+<script>
+    let btnSendAccess = document.getElementById('btnSendAccess');
+    let emailEmpresa = document.getElementById('editEmail');
+    let phoneEmpresa = document.getElementById('editTelefono');
+    let editNombreEmpresa = document.getElementById('editNombreEmpresa');
+    let editarEmpresaForm = document.getElementById('editarEmpresaForm');
+    let btnEnviarManual = document.getElementById('btnEnviarManual');
+    let btnSaveChange = document.getElementById('btnSaveChange');
+    let btnSaveChange2 = document.getElementById('btnSaveChange2');
+    const modalNombreMaquina = document.getElementById("modalNombreMaquina");
+    const modalDireccionEquipo = document.getElementById("modalDireccionEquipo");
+    const modalUsuario = document.getElementById("modalUsuario");
+    const modalPassword = document.getElementById("modalPassword");
+    const selectTipoAccesoModal = document.getElementById("selectTipoAccesoModal");
+    const buscarSolicitanteEmpresa = document.getElementById("buscarSolicitanteEmpresa");
+    const tbodyEmpresas = document.getElementById("tbodyEmpresas");
+    const credencialesEmpresa = document.getElementById("credencialesEmpresa");
+    const tbodyCredenciales = document.getElementById("tbodyCredenciales");
+    const newCredenciales = document.getElementById("newCredenciales");
+    const createNewCredenciales = document.getElementById("createNewCredenciales");
+    const btnNewAccess = document.getElementById("btnNewAccess");
+    var editContrasena = document.getElementById("editContrasena");
+    var editNombreMaquina = document.getElementById("editNombreMaquina");
+    var editDireccionEquipo = document.getElementById("editDireccionEquipo");
+    var editUsuario = document.getElementById("editUsuario");
+    var idAcceso = document.getElementById("idAcceso");
+    var editAcceso = document.getElementById("editAcceso");
+    let idEmpresa, txtAcceso
+
+    newCredenciales.addEventListener("click", function(){
+        createNewCredenciales.style.display = ""
+    })
+
+    function cargarTablaTickets() {
+        $.ajax({
+            url: '{% url "empresascreados" %}',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                // Limpiar el cuerpo de la tabla
+                $('#tickets-table tbody').empty();
+                // Iterar sobre los datos y agregar filas a la tabla
+                $.each(data, function (index, empresa) {
+                    var newRow = '<tr>' +
+                        '<td>' + empresa.NumEmpresa + '</td>' +
+                        '<td>' + empresa.nombreEmpresa + '</td>' +
+                        '<td>' + empresa.direccion + '</td>' +
+                        '<td>' + empresa.telefono + '</td>' +
+                        '<td>' + empresa.email + '</td>' +
+                        '<td>' +
+                        '<button class="btn btn-info btn-sm" onclick="verEmpresa(' + empresa.NumEmpresa + ')">Ver</button>' +
+                        '</td>' +
+                        '</tr>';
+                    $('#tickets-table tbody').append(newRow);
+                });
+            },
+            error: function (error) {
+                console.log('Error en la solicitud AJAX:', error);
+            }
+        });
+    }
+
+
+    function verEmpresa(numEmpresa) {
+        idEmpresa = numEmpresa
+        tbodyCredenciales.innerHTML = ""
+        createNewCredenciales.style.display = "none"
+        // Realizar la solicitud AJAX para obtener los detalles de la empresa
+        $.ajax({
+            url: '{% url "detalles_empresa" %}',
+            method: 'GET',
+            data: { numEmpresa: numEmpresa },
+            dataType: 'json',
+            success: function (empresa) {
+                // Llenar los campos del modal con los detalles de la empresa
+                $('#modalNumEmpresa').val(empresa[0].NumEmpresa);
+                $('#editNombreEmpresa').val(empresa[0].nombreEmpresa);
+                $('#editDireccion').val(empresa[0].direccion);
+                $('#editTelefono').val(empresa[0].telefono);
+                $('#editEmail').val(empresa[0].email);
+
+                // Iteracion para la tabla
+                empresa.forEach((registro) => {
+                    if (registro.idAcceso != null) {
+                        var rowModal = document.createElement("tr");
+
+                        var cellId = document.createElement("td");
+                        cellId.textContent = registro.idAcceso;
+
+                        var cellNombreEquipo = document.createElement("td");
+                        cellNombreEquipo.textContent = registro.nombreEquipo;
+
+                        var cellTipoAcceso = document.createElement("td");
+                        cellTipoAcceso.textContent = registro.tipoAcceso;
+
+                        var cellDireccion = document.createElement("td");
+                        cellDireccion.textContent = registro.direccionMaquina;
+
+                        var cellUsuario = document.createElement("td");
+                        cellUsuario.textContent = registro.usuario;
+
+                        var cellContraseña = document.createElement("td");
+                        cellContraseña.textContent = registro.password;
+
+                        var cellEditar = document.createElement("td");
+                        var buttonEditar = document.createElement("button");
+                        buttonEditar.type = "button";
+                        buttonEditar.className = "btn btn-sm btn-outline-light";
+                        buttonEditar.setAttribute("data-toggle", "modal");
+                        buttonEditar.setAttribute("data-target", "#detalle");
+
+                        buttonEditar.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 128 128">
+                            <path d="M 79.335938 15.667969 C 78.064453 15.622266 76.775 15.762109 75.5 16.099609 C 72.1 16.999609 69.299609 19.199219 67.599609 22.199219 L 64 28.699219 C 63.2 30.099219 63.699609 32.000781 65.099609 32.800781 L 82.400391 42.800781 C 82.900391 43.100781 83.400391 43.199219 83.900391 43.199219 C 84.200391 43.199219 84.399219 43.199609 84.699219 43.099609 C 85.499219 42.899609 86.1 42.399219 86.5 41.699219 L 90.199219 35.199219 C 91.899219 32.199219 92.4 28.700781 91.5 25.300781 C 90.6 21.900781 88.400391 19.100391 85.400391 17.400391 C 83.525391 16.337891 81.455078 15.744141 79.335938 15.667969 z M 60.097656 38.126953 C 59.128906 38.201172 58.199219 38.724609 57.699219 39.599609 L 27.5 92 C 24.1 97.8 22.200781 104.30039 21.800781 110.90039 L 21 123.80078 C 20.9 124.90078 21.5 125.99961 22.5 126.59961 C 23 126.89961 23.5 127 24 127 C 24.6 127 25.199219 126.8 25.699219 126.5 L 36.5 119.40039 C 42 115.70039 46.7 110.8 50 105 L 80.300781 52.599609 C 81.100781 51.199609 80.599219 49.3 79.199219 48.5 C 77.799219 47.7 75.899609 48.199609 75.099609 49.599609 L 44.800781 102 C 41.900781 106.9 37.899609 111.20039 33.099609 114.40039 L 27.300781 118.19922 L 27.699219 111.30078 C 27.999219 105.60078 29.699609 100 32.599609 95 L 62.900391 42.599609 C 63.700391 41.199609 63.200781 39.3 61.800781 38.5 C 61.275781 38.2 60.678906 38.082422 60.097656 38.126953 z M 49 121 C 47.3 121 46 122.3 46 124 C 46 125.7 47.3 127 49 127 L 89 127 C 90.7 127 92 125.7 92 124 C 92 122.3 90.7 121 89 121 L 49 121 z M 104 121 A 3 3 0 0 0 101 124 A 3 3 0 0 0 104 127 A 3 3 0 0 0 107 124 A 3 3 0 0 0 104 121 z"></path>
+                            </svg>
+                        `;
+
+                        buttonEditar.addEventListener("click", function () {
+                            idAcceso.value = registro.idAcceso;
+                            editContrasena.value = registro.password;
+                            editNombreMaquina.value = registro.nombreEquipo;
+                            editDireccionEquipo.value = registro.direccionMaquina;
+                            editUsuario.value = registro.usuario;
+                            editAcceso.value = registro.idTipoAcceso;
+
+                            // Seleccionar el índice del acceso (si aplica)
+                            var selectedIndex = Array.from(editAcceso.options).findIndex(
+                                (option) => option.value == registro.idTipoAcceso
+                            );
+                            editAcceso.selectedIndex = selectedIndex;
+
+                            console.log("Datos cargados en el modal:");
+                            console.log({
+                                idAcceso: registro.idAcceso,
+                                contraseña: registro.password,
+                                nombreEquipo: registro.nombreEquipo,
+                                direccion: registro.direccionMaquina,
+                                usuario: registro.usuario,
+                                tipoAcceso: registro.idTipoAcceso,
+                            });
+                        });
+
+                        cellEditar.appendChild(buttonEditar);
+
+                        rowModal.appendChild(cellId);
+                        rowModal.appendChild(cellNombreEquipo);
+                        rowModal.appendChild(cellTipoAcceso);
+                        rowModal.appendChild(cellDireccion);
+                        rowModal.appendChild(cellUsuario);
+                        rowModal.appendChild(cellContraseña);
+                        rowModal.appendChild(cellEditar);
+
+                        tbodyCredenciales.appendChild(rowModal);
+                    } else {
+                        var rowModal = document.createElement("tr");
+                        var cellMessage = document.createElement("td");
+                        cellMessage.textContent = "No hay credenciales";
+                        cellMessage.style.textAlign = "center";
+                        cellMessage.setAttribute("colspan", "7"); 
+                        rowModal.appendChild(cellMessage);
+                        tbodyCredenciales.appendChild(rowModal);
+                    }
+                });
+                $('#detalleEmpresaModal').modal('show');
+
+
+
+            },
+            error: function (error) {
+                console.log('Error al obtener detalles de la empresa:', error);
+            }
+        });
+    }
+    function cargarCredenciales(idEmpresa) {
+        $.ajax({
+            url: '{% url "detalles_credenciales" %}',
+            method: 'GET',
+            data: { numEmpresa: idEmpresa },
+            dataType: 'json',
+            success: function (empresa) {
+                $('#tbodyCredenciales').empty();
+                empresa.forEach((registro) => {
+                    var rowModal = `<tr>
+                    <td>${registro.idAcceso}</td>
+                    <td>${registro.nombreEquipo}</td>
+                    <td>${registro.tipoAcceso}</td>
+                    <td>${registro.direccionMaquina}</td>
+                    <td>${registro.usuario}</td>
+                    <td>${registro.password}</td>
+
+                    <td><button class="btn btn-sm btn-outline-light" onclick="editarCredencial(${registro.idAcceso})">Editar</button></td>
+                </tr>`;
+                    $('#tbodyCredenciales').append(rowModal);
+                });
+            },
+            error: function (error) {
+                console.log("Error al obtener credenciales:", error);
+            }
+        });
+    }
+
+
+    function actualizarCredenciales(idAcceso) {
+        var formData = new FormData();
+        formData.append("idAcceso", document.getElementById("idAcceso").value);
+        formData.append("nombreEquipo", document.getElementById("editNombreMaquina").value);
+        formData.append("tipoAcceso", document.getElementById("editAcceso").value);
+        formData.append("direccionMaquina", document.getElementById("editDireccionEquipo").value);
+        formData.append("usuario", document.getElementById("editUsuario").value);
+        formData.append("password", document.getElementById("editContrasena").value);
+
+        fetch("{% url 'actualizar_credenciales' %}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"), // Asegúrate de enviar el token CSRF
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+
+                    toastr.success('Los cambios de las creedenciales han sido guardados correctamente', 'Cambios guardados');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    toastr.error("Error al actualizar las credenciales: " + data.error);
+                }
+            })
+            .catch(error => console.error("Error en la actualización:", error));
+    }
+
+    function guardarCambiosEmpresa() {
+        var numEmpresa = $('#modalNumEmpresa').val();
+        var nombreEmpresa = $('#editNombreEmpresa').val();
+        var direccion = $('#editDireccion').val();
+        var telefono = $('#editTelefono').val();
+        var email = $('#editEmail').val();
+
+        toastr.info('Se estan realizando cambios en la información', 'Guardando...');
+        btnSaveChange.disabled = true;
+        $.ajax({
+            url: '{% url "actualizar_empresa" %}',
+            method: 'POST',
+            data: {
+                numEmpresa: numEmpresa,
+                nombreEmpresa: nombreEmpresa,
+                direccion: direccion,
+                telefono: telefono,
+                email: email,
+                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success('Los cambios han sido guardados correctamente', 'Cambios guardados');
+                    btnSaveChange.disabled = false;
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    toastr.success('Los cambios han sido guardados correctamente', 'Cambios guardados');
+                    btnSaveChange.disabled = false;
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 3000);
+                }
+            },
+            error: function (error) {
+                mostrarMensaje('error', 'Error al actualizar la empresa: ' + error.statusText);
+            }
+        });
+    }
+
+    function mostrarMensaje(tipo, mensaje) {
+        var alertClass = tipo === 'success' ? 'alert-success' : 'alert-danger';
+        $('#mensajeAlerta').removeClass('alert-success alert-danger').addClass(alertClass);
+        $('#mensajeAlerta').text(mensaje);
+        $('#mensajeAlerta').show();
+
+        // Ocultar el mensaje después de unos segundos (opcional)
+        setTimeout(function () {
+            $('#mensajeAlerta').hide();
+        }, 5000);  // Ocultar después de 5 segundos (puedes ajustar esto según tus necesidades)
+    }
+
+    $(document).ready(function () {
+    $('form').submit(function (event) {
+
+        console.log('🔥 SUBMIT GLOBAL → form id:', this.id);
+        console.log('👉 action:', $(this).attr('action'));
+
+        // ⛔ BLOQUEAR EL SUBMIT GLOBAL SOLO PARA CREAR EMPRESA
+        if (this.id === 'formCrearEmpresa') {
+            console.log('⛔ Submit global ignorado para crear empresa');
+            return; // 👈 IMPORTANTE: sale y NO ejecuta AJAX global
+        }
+
+        event.preventDefault();
+        toastr.info('Guardando los cambios realizados', "Guardando...");
+        var form = $(this);
+        var formData = new FormData(form[0]);
+
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log('✅ GLOBAL success:', data);
+                if (data.status === 'success') {
+                    toastr.success(data.message, 'Ticket creado');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    toastr.error('Error al crear el ticket: ' + data.message, 'Error');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('❌ GLOBAL error:', status, error);
+                console.log('📦 responseText:', xhr.responseText);
+                toastr.error('Error AJAX GLOBAL: ' + error, 'Error');
+            }
+        });
+    });
+
+    cargarTablaTickets();
+
+    $('#vertickets-tab').on('click', function () {
+        cargarTablaTickets();
+    });
+});
+
+
+    $(document).ready(function () {
+
+    // ⚙️ Configuración global de Toastr
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: "3000"
+    };
+
+    $('#formCrearEmpresa').on('submit', function (event) {
+        console.log('🚀 SUBMIT CREAR EMPRESA');
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        console.log('👉 action:', $(this).attr('action'));
+
+        let formData = new FormData(this);
+
+        for (let pair of formData.entries()) {
+            console.log('📌', pair[0], ':', pair[1]);
+        }
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+
+            success: function (data) {
+                console.log('✅ EMPRESA success:', data);
+
+                if (data.status === 'success') {
+                    toastr.success(data.message || 'Empresa creada con éxito 🎉');
+                    $('#formCrearEmpresa')[0].reset();
+                } else {
+                    toastr.warning(data.message || 'No se pudo crear la empresa');
+                }
+            },
+
+            error: function (xhr, status, error) {
+                console.error('❌ EMPRESA error:', status, error);
+                console.log('📦 responseText:', xhr.responseText);
+
+                toastr.error('Error interno del servidor ❌');
+            }
+        });
+    });
+
+});
+
+
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Buscar el token CSRF en las cookies
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Funcionalidad del boton
+    btnSendAccess.addEventListener('click', function () {
+        btnSendAccess.disabled = true;
+        const data = {
+            email: emailEmpresa.value,
+            telefono: phoneEmpresa.value,
+            nombreEmpresa: editNombreEmpresa.value,
+        }
+        toastr.info('Enviando credenciales', "Enviando...");
+        // Enviar los datos a la vista de Django
+        fetch('enviar_credenciales/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al enviar la información de la empresa');
+                }
+                toastr.success(data.message, "Credenciales enviadas exitosamente.");
+                btnSendAccess.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error(data.message, "Error al enviar las credenciales.");
+                btnSendAccess.disabled = false;
+            });
+    })
+
+    // Funcionalidad del envio de Manual de Uso
+    btnEnviarManual.addEventListener('click', function () {
+        btnEnviarManual.disabled = true;
+        var data = {
+            email: emailEmpresa.value
+        }
+        toastr.info('Enviando manual', "Enviando...");
+        fetch('send_manual/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al enviar el archivo');
+                }
+                toastr.success('El manual fue enviado correctamente', "Envio exitoso");
+                btnEnviarManual.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error('El manual no fue enviado correctamente', "Error");
+                btnEnviarManual.disabled = false;
+            });
+    })
+
+    // Input para buscar
+    buscarSolicitanteEmpresa.addEventListener("keyup", function () {
+        const textoBusqueda = buscarSolicitanteEmpresa.value.toLowerCase();
+
+        Array.from(tbodyEmpresas.children).forEach(function (fila) {
+            const textoFila = fila.textContent.toLowerCase();
+            if (textoFila.includes(textoBusqueda)) {
+                fila.style.display = "";
+            } else {
+                fila.style.display = "none";
+            }
+        });
+    });
+
+    btnNewAccess.addEventListener("click", function(e){
+        e.preventDefault();
+
+        var nombreMaquina = $('#modalNombreMaquina').val();
+        var direccionEquipo = $('#modalDireccionEquipo').val();
+        var usuario = $('#modalUsuario').val();
+        var contrasena = $('#modalPassword').val();
+        var tipoAcceso = $('#selectTipoAccesoModal').val();
+        
+        $.ajax({
+            url: '{% url "create_acces_empresa" %}',
+            method: 'POST',
+            data: {
+                'modalNombreMaquina': nombreMaquina,
+                'modalDireccionEquipo': direccionEquipo,
+                'modalUsuario': usuario,
+                'modalPassword': contrasena,
+                'selectTipoAccesoModal': tipoAcceso,
+                'idEmpresa': idEmpresa
+            },
+            success: function(response){
+                if(response.status === 'success'){
+                    toastr.success("Acceso creado exitosamente", "Acceso creado")
+                    setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                } else {
+                    toastr.error("Error al crear el acceso, verifique el tipo de acceso", "Error en el acceso")
+                }
+            },
+            error: function(response){
+                toastr.error("Error al crear el acceso, verifique el tipo de acceso", "Error en el acceso")
+            }
+        });
+    })
+
+</script>
+{% endblock %}
