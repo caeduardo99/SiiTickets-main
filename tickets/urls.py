@@ -24,6 +24,7 @@ urlpatterns = [
     path('', views.login_user, name='login'),
     path('view_control_panel', views.view_control_panel, name='view_control_panel'),
     path('contacto', views.contact, name='contact'),
+    path('configuracion/', views.configuracion_usuario, name='configuracion_usuario'),
     path('soporte', views.soporte, name='soporte'),
     path('desarrollo', views.desarrollo, name='desarrollo'),
     path('desarrolloact', views.desarrolloact, name='desarrolloact'),
