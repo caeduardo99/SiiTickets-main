@@ -3482,6 +3482,39 @@ def actualizar_modulo(request):
         return JsonResponse({"error": "Método no permitido"})
 
 
+@require_POST
+@login_required
+def guardar_solicitante_empresa(request):
+    """Crea o actualiza el solicitante principal asociado a una empresa."""
+    try:
+        id_empresa = request.POST.get("idEmpresa")
+        id_solicitante = request.POST.get("idSolicitante")
+        empresa = Empresa.objects.get(pk=id_empresa)
+        datos = {
+            "ruc": (request.POST.get("ruc") or "").strip(),
+            "nombreApellido": (request.POST.get("nombre") or "").strip(),
+            "telefonoSolicitante": (request.POST.get("telefono") or "").strip(),
+            "direccion": (request.POST.get("direccion") or "").strip(),
+            "correo": (request.POST.get("correo") or "").strip(),
+        }
+        if not datos["nombreApellido"]:
+            return JsonResponse({"success": False, "message": "El nombre del solicitante es obligatorio."}, status=400)
+        if id_solicitante:
+            solicitante = Solicitante.objects.get(pk=id_solicitante, idEmpresa=empresa)
+            for campo, valor in datos.items():
+                setattr(solicitante, campo, valor)
+            solicitante.save()
+        else:
+            solicitante = Solicitante.objects.create(idEmpresa=empresa, **datos)
+        return JsonResponse({"success": True, "idSolicitante": solicitante.id, "message": "Solicitante guardado correctamente."})
+    except Empresa.DoesNotExist:
+        return JsonResponse({"success": False, "message": "La empresa no existe."}, status=404)
+    except Solicitante.DoesNotExist:
+        return JsonResponse({"success": False, "message": "El solicitante no pertenece a esta empresa."}, status=404)
+    except Exception:
+        return JsonResponse({"success": False, "message": "No se pudo guardar el solicitante."}, status=400)
+
+
 @csrf_exempt
 def actualizar_solicitante(request):
     if request.method == "POST":
