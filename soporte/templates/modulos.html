@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+<style>
+.modules-page{padding:1rem 1.25rem;color:#243247}.modules-header{padding:1.4rem 1.5rem;margin-bottom:1rem;border-radius:16px;color:#fff;background:linear-gradient(120deg,#17365D,#1D4E89 68%,#2875A8);box-shadow:0 8px 24px #17365d24}.modules-header h3{margin:0;color:#fff;font-weight:750}.modules-page .nav-tabs{border-bottom:1px solid #dce5ef;gap:.35rem}.modules-page .nav-tabs .nav-link{padding:.8rem 1rem;color:#526176;font-weight:650;border-radius:10px 10px 0 0}.modules-page .nav-tabs .nav-link.active{color:#17365D;border-color:#dce5ef #dce5ef #fff}.modules-page .card{border:1px solid #e3eaf2;border-radius:14px;box-shadow:0 4px 16px #1e32500b;overflow:hidden}.modules-page .card-header.modules-card-header{padding:.95rem 1.15rem;color:#17365D;background:#fff;border-bottom:1px solid #edf1f5;font-weight:700}.modules-page .card-body{padding:1.2rem}.modules-page label{color:#526176;font-weight:650}.modules-page .form-control{min-height:40px;border:1px solid #dce4ed;border-radius:8px;background:#fbfcfe}.modules-page .btn{border-radius:8px;font-weight:650}.modules-page .btn-dark{background:#17365D;border-color:#17365D}.modules-page .table-wrap{border:1px solid #e5ebf2;border-radius:10px;overflow:auto;max-height:440px}.modules-page #tickets-table{margin-bottom:0}.modules-page #tickets-table thead th{position:sticky;top:0;z-index:1;padding:.8rem;color:#43536a;background:#f1f5f9;border-top:0;font-size:.78rem;text-transform:uppercase;white-space:nowrap}.modules-page #tickets-table tbody td{padding:.72rem;vertical-align:middle;border-color:#edf1f5}.modules-page #tickets-table tbody tr:hover{background:#f7faff}@media(max-width:767.98px){.modules-page{padding:.6rem}.modules-page .card-body{padding:.9rem}}
+</style>
     <!-- Contenido específico de la página de dashboard -->
-    <section class="content-header">
+    <section class="content-header modules-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3>Módulos</h3>
+                    <h3><i class="fas fa-cubes mr-2" aria-hidden="true"></i>Gestión de módulos</h3>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
     <!-- Sección de crear empresas -->
-    <div class="content">
+    <div class="content modules-page">
         <ul class="nav nav-tabs" id="myTabs">
             <li class="nav-item">
                 <a class="nav-link active" id="nuevomodulo-tab" data-toggle="tab" href="#nuevomodulo">Nuevo Módulo</a>
@@ -25,7 +28,7 @@
             <!-- Contenido de la pestaña Nuevo Ticket -->
             <div class="tab-pane fade show active" id="nuevomodulo">
                 <div class="card mb-3">
-                    <div class="card-header bg-danger text-white">Detalles del Nuevo Módulo</div>
+                    <div class="card-header modules-card-header"><i class="fas fa-cubes mr-2" aria-hidden="true"></i>Datos del nuevo módulo</div>
                     <div class="card-body">
                         <form class="form-row" method="post" action="{% url 'crear_modulo' %}">
                             {% csrf_token %}
@@ -49,9 +52,9 @@
             <!-- Sección de listado de empresas -->
             <div class="tab-pane fade" id="vermodulos">
                 <div class="card mb-3">
-                    <div class="card-header bg-danger text-white">Lista de Módulos</div>
+                    <div class="card-header modules-card-header"><i class="fas fa-list mr-2" aria-hidden="true"></i>Módulos registrados</div>
                     <div class="card-body">
-                        <div class="table-responsive" style="overflow-y: auto; max-height: 400px;">
+                        <div class="table-responsive table-wrap">
                             <table class="table" id="tickets-table">
                                 <thead>
                                 <tr>
@@ -110,7 +113,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
-    <script src="../static/dist/utils/soporte.js"></script>
+    <script src="{% static 'dist/utils/soporte.js' %}?v=20261014-5"></script>
     <script>
         function cargarTablaTickets() {
             $.ajax({
