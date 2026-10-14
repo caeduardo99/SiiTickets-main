@@ -1523,7 +1523,7 @@ def historial_ticket_soporte(request, ticket_id):
         usuario = cambio.idAgente.get_full_name().strip() or cambio.idAgente.username
         anterior = cambio.idEstadoAnterior.descripcion if cambio.idEstadoAnterior_id else "Sin estado"
         actual = cambio.idEstadoActual.descripcion if cambio.idEstadoActual_id else "Sin estado"
-        es_asignacion = cambio.idEstadoAnterior_id == 1 and cambio.idEstadoActual_id == 3
+        es_asignacion = cambio.idEstadoActual_id == 3
         eventos.append({
             "fecha": cambio.fechaCambio.isoformat() if cambio.fechaCambio else "",
             "tipo": "asignacion" if es_asignacion else "estado",
