@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as logout_django
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from PIL import Image, UnidentifiedImageError
 from django.shortcuts import render
 from django.db import connections
 import json
@@ -66,6 +69,75 @@ def signout(request):
     """
     logout_django(request)
     return redirect("/")
+
+
+@login_required
+def configuracion_usuario(request):
+    """Permite actualizar el usuario, la contraseña y la foto de perfil."""
+    mensaje = ""
+    tipo_mensaje = "info"
+    password_form = PasswordChangeForm(user=request.user)
+
+    if request.method == "POST":
+        accion = request.POST.get("accion", "")
+        if accion == "perfil":
+            username = (request.POST.get("username") or "").strip()
+            first_name = (request.POST.get("first_name") or "").strip()
+            last_name = (request.POST.get("last_name") or "").strip()
+            foto = request.FILES.get("foto_perfil")
+
+            if not username:
+                mensaje, tipo_mensaje = "El nombre de usuario es obligatorio.", "danger"
+            elif User.objects.filter(username__iexact=username).exclude(pk=request.user.pk).exists():
+                mensaje, tipo_mensaje = "Ese nombre de usuario ya está en uso.", "danger"
+            elif foto and foto.size > 5 * 1024 * 1024:
+                mensaje, tipo_mensaje = "La imagen no puede superar los 5 MB.", "danger"
+            else:
+                try:
+                    imagen_procesada = None
+                    if foto:
+                        imagen = Image.open(foto)
+                        imagen.verify()
+                        foto.seek(0)
+                        imagen_procesada = Image.open(foto).convert("RGB")
+                        imagen_procesada.thumbnail((800, 800))
+
+                    request.user.username = username
+                    request.user.first_name = first_name
+                    request.user.last_name = last_name
+                    request.user.save(update_fields=["username", "first_name", "last_name"])
+
+                    if imagen_procesada:
+                        carpeta_fotos = settings.MEDIA_ROOT / "profile_images"
+                        os.makedirs(carpeta_fotos, exist_ok=True)
+                        ruta_foto = carpeta_fotos / ("usuario_%s.jpg" % request.user.pk)
+                        imagen_procesada.save(ruta_foto, format="JPEG", quality=88, optimize=True)
+
+                    mensaje, tipo_mensaje = "Tus datos se actualizaron correctamente.", "success"
+                except (UnidentifiedImageError, OSError, ValueError):
+                    mensaje, tipo_mensaje = "No se pudo procesar la imagen. Sube una imagen JPG, PNG o WEBP válida.", "danger"
+                except Exception:
+                    mensaje, tipo_mensaje = "Ocurrió un error al guardar los cambios. Inténtalo nuevamente.", "danger"
+
+        elif accion == "contrasena":
+            password_form = PasswordChangeForm(user=request.user, data=request.POST)
+            if password_form.is_valid():
+                usuario_actualizado = password_form.save()
+                update_session_auth_hash(request, usuario_actualizado)
+                mensaje, tipo_mensaje = "La contraseña se cambió correctamente.", "success"
+                password_form = PasswordChangeForm(user=request.user)
+            else:
+                mensaje, tipo_mensaje = "Revisa los campos de contraseña indicados.", "danger"
+
+    context = {
+        "nombre_usuario": request.user.username,
+        "fullName": request.user.get_full_name().strip() or request.user.username,
+        "mensaje": mensaje,
+        "tipo_mensaje": tipo_mensaje,
+        "password_form": password_form,
+        "foto_perfil_url": "/media/profile_images/usuario_%s.jpg" % request.user.pk,
+    }
+    return render(request, "configuracion_usuario.html", context)
 
 
 @login_required
