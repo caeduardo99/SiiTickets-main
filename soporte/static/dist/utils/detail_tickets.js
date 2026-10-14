@@ -77,6 +77,55 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Json de las actividades
   var actividades = JSON.parse(content.getAttribute("data-actividades"));
+
+  // Historial cronológico del ticket (datos existentes, sin modificar el esquema).
+  (function cargarHistorialTicket() {
+    const timeline = document.getElementById("ticketHistoryTimeline");
+    if (!timeline) return;
+    fetch(`${window.location.origin}/historial_ticket_soporte/${numTicket}/`, { credentials: "same-origin" })
+      .then(function (response) {
+        if (!response.ok) throw new Error("No se pudo cargar el historial");
+        return response.json();
+      })
+      .then(function (data) {
+        const eventos = data.eventos || [];
+        timeline.innerHTML = "";
+        if (!eventos.length) {
+          timeline.innerHTML = '<div class="text-muted">Todavía no hay eventos registrados para este ticket.</div>';
+          return;
+        }
+        eventos.forEach(function (evento) {
+          const item = document.createElement("div");
+          item.style.cssText = "position:relative;padding:0 0 1.15rem 1.5rem;margin-left:.45rem;border-left:2px solid #dce7f3;";
+          const dot = document.createElement("span");
+          dot.style.cssText = "position:absolute;left:-7px;top:3px;width:12px;height:12px;border-radius:50%;background:#1d4e89;border:2px solid #fff;box-shadow:0 0 0 1px #b8cce2;";
+          const heading = document.createElement("div");
+          heading.style.cssText = "font-weight:700;color:#17365d;";
+          heading.textContent = evento.titulo || "Evento";
+          const detail = document.createElement("div");
+          detail.style.cssText = "color:#43536a;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:.2rem;";
+          detail.textContent = evento.detalle || "Sin detalle";
+          const meta = document.createElement("div");
+          meta.style.cssText = "font-size:.78rem;color:#718096;margin-top:.3rem;";
+          let fecha = evento.fecha || "";
+          if (fecha) {
+            const parsed = new Date(fecha);
+            fecha = isNaN(parsed.getTime()) ? fecha : parsed.toLocaleString("es-EC");
+          }
+          meta.textContent = (fecha ? fecha + " · " : "") + "Por: " + (evento.usuario || "Sistema");
+          item.appendChild(dot);
+          item.appendChild(heading);
+          item.appendChild(detail);
+          item.appendChild(meta);
+          timeline.appendChild(item);
+        });
+      })
+      .catch(function (error) {
+        console.error("Error al cargar el historial del ticket:", error);
+        timeline.innerHTML = '<div class="text-danger">No se pudo cargar el historial. Actualiza la página para intentarlo de nuevo.</div>';
+      });
+  })();
+
   // Funcionalidad de todo el ticket general
   asunto =
     ticket[0].asunto == ""
