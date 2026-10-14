@@ -1,9 +1,51 @@
 {% extends "base.html" %}
-
 {% load static %}
 {% block content %}
+<style>
+    .ticket-detail-page { padding: 1.25rem; color: #243247; }
+    .ticket-hero { position: relative; overflow: hidden; border: 0; border-radius: 16px; background: linear-gradient(120deg, #17365D 0%, #1D4E89 68%, #2875A8 100%); color: #fff; box-shadow: 0 8px 24px rgba(23,54,93,.15); }
+    .ticket-hero:after { content: ""; position: absolute; right: -50px; top: -85px; width: 230px; height: 230px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; box-shadow: 0 0 0 28px rgba(255,255,255,.04), 0 0 0 58px rgba(255,255,255,.03); pointer-events: none; }
+    .ticket-hero .card-body { position: relative; z-index: 1; padding: 1.5rem 1.6rem; }
+    .ticket-kicker { color: rgba(255,255,255,.72); text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; font-weight: 700; }
+    #titleTicketDetail { margin: .4rem 0 .3rem; color: #fff; font-size: clamp(1.35rem, 2.4vw, 1.9rem); font-weight: 700; line-height: 1.25; }
+    .ticket-hero-subtitle { margin: 0; color: rgba(255,255,255,.82); font-size: .92rem; }
+    .ticket-section { border: 1px solid #e5ebf2; border-radius: 14px; box-shadow: 0 4px 16px rgba(30,50,80,.045); margin-bottom: 1.15rem; overflow: hidden; }
+    .ticket-section .card-header { display: flex; align-items: center; gap: .65rem; padding: .9rem 1.15rem; background: #fff; border-bottom: 1px solid #edf1f5; color: #17365D; font-weight: 700; }
+    .ticket-section .card-header i { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 9px; background: #edf4fb; color: #1D4E89; }
+    .ticket-section .card-body { padding: 1.2rem; }
+    .ticket-detail-page label { color: #526176; font-size: .82rem; font-weight: 650; margin-bottom: .4rem; }
+    .ticket-detail-page .form-control, .ticket-detail-page .custom-select, .ticket-detail-page .select2-container--default .select2-selection--single { border-color: #dce4ed; border-radius: 8px; min-height: 39px; color: #243247; background-color: #f9fbfd; box-shadow: none; }
+    .ticket-detail-page textarea.form-control { min-height: auto; line-height: 1.5; }
+    .ticket-detail-page .form-control:disabled, .ticket-detail-page .custom-select:disabled { background: #f5f7fa; color: #3c4b60; opacity: 1; cursor: default; }
+    .ticket-detail-page .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 37px; color: #243247; }
+    .ticket-detail-page .select2-container--default .select2-selection--single .select2-selection__arrow { height: 37px; }
+    .ticket-field { margin-bottom: 1rem; }
+    .ticket-media-panel { height: 100%; padding: 1rem; border: 1px dashed #d5dfeb; border-radius: 12px; background: #f9fbfe; }
+    #numRemotoLabel { margin: 0 0 .8rem; padding: .65rem .75rem; border-radius: 8px; background: #edf4fb; color: #17365D; font-size: .85rem; font-weight: 650; overflow-wrap: anywhere; }
+    #imageError, #imageError2 { max-width: 100%; max-height: 250px; object-fit: contain; border-radius: 9px; margin: .25rem 0 .75rem; background: #fff; }
+    .ticket-actions { position: sticky; bottom: .5rem; z-index: 10; margin-top: .5rem; padding: .9rem 1rem; border: 1px solid #e1e8f0; border-radius: 14px; background: rgba(255,255,255,.96); box-shadow: 0 8px 25px rgba(20,40,70,.1); backdrop-filter: blur(8px); }
+    .ticket-actions .btn { border-radius: 8px; font-weight: 650; margin: .2rem; padding: .48rem .8rem; }
+    #btnGenerarReporte { background: #17365D; border-color: #17365D; }
+    #btnGenerarReporte:hover { background: #102844; border-color: #102844; }
+    #rowTableTaskEdit { margin-top: 1rem; }
+    #rowTableTaskEdit table { min-width: 850px; }
+    #rowTableTaskEdit thead th { background: #f1f5f9; color: #43536a; border-top: 0; font-size: .78rem; white-space: nowrap; }
+    #rowTableTaskEdit td { vertical-align: middle; }
+    #textAgentModified { color: #718096; font-size: .78rem; margin: .5rem 0 0; }
+    #numberEnterprise { color: #64748b; font-size: .8rem; margin: .45rem 0 0; }
+    .ticket-client-report { padding: .7rem .85rem; background: #f7faff; border: 1px solid #e3ebf5; border-radius: 9px; }
+    .ticket-client-report label { margin: 0; color: #34445a; }
+    .ticket-client-report input { margin-top: .18rem; }
+    @media (max-width: 767.98px) {
+        .ticket-detail-page { padding: .6rem; }
+        .ticket-hero .card-body { padding: 1.15rem; }
+        .ticket-section .card-body { padding: .9rem; }
+        .ticket-actions { position: static; }
+        .ticket-actions .btn { width: 100%; margin: .25rem 0; }
+    }
+</style>
 
-<div class="content" id="contenidoVista"
+<div class="content ticket-detail-page" id="contenidoVista"
     data-nombre-usuario="{{ nombre_usuario }}"
     data-mostrar-campo="{{ mostrar_campo }}"
     data-ticket="{{ ticket }}"
@@ -12,186 +54,184 @@
     <input type="hidden" id="nombreUsuario" value="{{ user.username }}">
     <input type="hidden" id="idUsuario" value="{{ user.id }}">
     <input type="hidden" id="razonSocial" value="{{ user.first_name }}">
-    <br>
-    <h2 id="titleTicketDetail"></h2>
-    <hr>
-    <div class="card">
+
+    <section class="card ticket-hero mb-4">
         <div class="card-body">
-            <form class="form">
-                <div class="row g-1">
-                    <div class="col-md-12">
-                        <label for="asuntoTicket" class="form-label">Asunto</label>
-                        <input type="text" name="asuntoTicketAgenteEdit" id="asuntoTicketAgenteEdit" class="form-control" disabled>
-                    </div>
+            <div class="ticket-kicker"><i class="fas fa-headset mr-2"></i>Centro de soporte</div>
+            <h2 id="titleTicketDetail">Detalle del ticket</h2>
+            <p class="ticket-hero-subtitle">Consulta la solicitud, revisa las actividades y gestiona las acciones disponibles.</p>
+        </div>
+    </section>
+
+    <section class="card ticket-section">
+        <div class="card-header"><i class="fas fa-clipboard-list"></i><span>Solicitud y descripción</span></div>
+        <div class="card-body">
+            <div class="ticket-field">
+                <label for="asuntoTicketAgenteEdit">Asunto del requerimiento</label>
+                <input type="text" name="asuntoTicketAgenteEdit" id="asuntoTicketAgenteEdit" class="form-control" disabled>
+            </div>
+            <div class="ticket-field mb-0">
+                <label for="textAreaComentarioEdit">Detalle de la solicitud</label>
+                <textarea class="form-control" id="textAreaComentarioEdit" rows="3" disabled></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="card ticket-section">
+        <div class="card-header"><i class="fas fa-users"></i><span>Responsables y fechas</span></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 ticket-field">
+                    <label for="selectEditAgenteSolicitado">Agente encargado</label>
+                    <select class="select2" id="selectEditAgenteSolicitado" style="width: 100%;" name="selectEditAgenteSolicitado" disabled>
+                        <option value="">Seleccione Agente</option>
+                        {% for agente in resultados_agentes_data %}
+                        <option value="{{ agente.id }}">{{ agente.full_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="row g-1">
-                    <div class="col-md-12">
-                        <label for="textAreaComentarioEdit" class="form-label">Detalle de la Solicitud</label>
-                        <textarea class="form-control" id="textAreaComentarioEdit" rows="3" disabled></textarea>
-                    </div>
+                <div class="col-md-6 ticket-field">
+                    <label for="selectSolicitante">Solicitante</label>
+                    <select class="select2" id="selectSolicitante" style="width: 100%;" name="selectSolicitante" disabled>
+                        <option value="">Seleccione Solicitante</option>
+                        {% for solicitante in all_solicitantes %}
+                        <option value="{{ solicitante.id }}" data-empresa="{{ solicitante.nombreEmpresa }}">{{ solicitante.nombreApellido }} - {{ solicitante.nombreEmpresa }}</option>
+                        {% endfor %}
+                    </select>
+                    <h6 id="numberEnterprise"></h6>
                 </div>
-                <br>
-                <div class="row g-1">
-                    <div class="col-md-6">
-                        <label>Agente encargado</label>
-                            <select class="select2" id="selectEditAgenteSolicitado" style="width: 100%;"
-                                name="selectEditAgenteSolicitado" disabled>
-                                <option value="">Seleccione Agente</option>
-                                {% for agente in resultados_agentes_data %}
-                                <option value="{{ agente.id }}">
-                                    {{ agente.full_name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="solicitante">Solicitante:</label>
-                        <select class="select2" id="selectSolicitante" style="width: 100%;" name="selectSolicitante" disabled>
-                            <option value="">Seleccione Solicitante</option>
-                            {% for solicitante in all_solicitantes %}
-                            <option value="{{ solicitante.id }}" data-empresa="{{ solicitante.nombreEmpresa }}">
-                                {{ solicitante.nombreApellido }} - {{ solicitante.nombreEmpresa }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        <h6 id="numberEnterprise"></h6>
-                    </div>
+            </div>
+            <div class="row mb-0">
+                <div class="col-md-4 ticket-field">
+                    <label for="fechaCreacionEdit">Fecha de creación</label>
+                    <input type="datetime-local" id="fechaCreacionEdit" name="fechaCreacionEdit" class="form-control" disabled>
                 </div>
-                <br>
-                <div class="row g-1">
-                    <div class="col-md-4">
-                        <label for="datetimeInput">Fecha Creación:</label>
-                        <input type="datetime-local" id="fechaCreacionEdit" name="fechaCreacionEdit" class="form-control" disabled>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="datetimeInput">Fecha Finalización estimada:</label>
-                        <input type="datetime-local" id="fechaFinalizacionEdit" name="fechaFinalizacionEdit" class="form-control" disabled>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="datetimeInput">Fecha de cierre del Ticket:</label>
-                        <input type="datetime-local" id="fechaFinalizacionRealEdit" name="fechaFinalizacionRealEdit" class="form-control" disabled>
-                    </div>
+                <div class="col-md-4 ticket-field">
+                    <label for="fechaFinalizacionEdit">Fecha de finalización estimada</label>
+                    <input type="datetime-local" id="fechaFinalizacionEdit" name="fechaFinalizacionEdit" class="form-control" disabled>
                 </div>
-                <br>
-                <div class="row g-1">
-                    <div class="col-md-7">
-                        <label for="textAreaComentarioAdicional" class="form-label">Comentario adicional:</label>
+                <div class="col-md-4 ticket-field mb-0">
+                    <label for="fechaFinalizacionRealEdit">Fecha de cierre del ticket</label>
+                    <input type="datetime-local" id="fechaFinalizacionRealEdit" name="fechaFinalizacionRealEdit" class="form-control" disabled>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-lg-7">
+            <section class="card ticket-section h-100">
+                <div class="card-header"><i class="fas fa-clipboard-check"></i><span>Seguimiento y facturación</span></div>
+                <div class="card-body">
+                    <div class="ticket-field">
+                        <label for="textAreaComentarioAdicional">Comentario adicional</label>
                         <textarea class="form-control" id="textAreaComentarioAdicional" rows="3" disabled></textarea>
-                        <br>
-                        <label for="textAreaCausaError" class="form-label">El requerimiento necesita facturación ?</label>
+                    </div>
+                    <div class="ticket-field">
+                        <label for="selectFacturacion">¿El requerimiento necesita facturación?</label>
                         <select class="custom-select" id="selectFacturacion" disabled>
                             <option selected>El requerimiento se factura ?</option>
-                            <option value="true">Si</option>
+                            <option value="true">Sí</option>
                             <option value="false">No</option>
                         </select>
-                        <br>
-                        <label for="inputNumHorasTrabajoTicketGeneral" class="form-label">Horas de Soporte</label>
-                        <input type="number" name="inputNumHorasTrabajoTicketGeneral" id="inputNumHorasTrabajoTicketGeneral" class="form-control" disabled>
-                        <br>
-                        <label for="textAreaCausaError" class="form-label">Causa del error:</label>
-                        <textarea class="form-control" id="textAreaCausaError" rows="3" disabled></textarea>
                     </div>
-                    <div class="col-md-5">
-                        <h6 id="numRemotoLabel"></h6>
-                        <br>
-                        <img class="img-fluid" id="imageError" style="width: 250px;height: auto;" alt=" Imagen o Video adjunto (Click para ver)">
-                        <br>
-                        <img class="img-fluid" id="imageError2" style="width: 250px;height: auto;" alt="Imagen o Video adjunto (Click para ver)">
-                        <br>
-                        <div class="input-group" id="rowInputImg2">
+                    <div class="ticket-field">
+                        <label for="inputNumHorasTrabajoTicketGeneral">Horas de soporte</label>
+                        <input type="number" name="inputNumHorasTrabajoTicketGeneral" id="inputNumHorasTrabajoTicketGeneral" class="form-control" disabled>
+                    </div>
+                    <div class="ticket-field mb-0">
+                        <label for="textAreaCausaError">Causa del error / observaciones</label>
+                        <textarea class="form-control" id="textAreaCausaError" rows="4" disabled></textarea>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-5">
+            <section class="card ticket-section h-100">
+                <div class="card-header"><i class="fas fa-paperclip"></i><span>Archivos y acceso remoto</span></div>
+                <div class="card-body">
+                    <div class="ticket-media-panel">
+                        <h6 id="numRemotoLabel">Información de acceso remoto</h6>
+                        <img class="img-fluid" id="imageError" alt="Imagen o video adjunto (clic para abrir)">
+                        <img class="img-fluid" id="imageError2" alt="Segunda imagen o video adjunto (clic para abrir)">
+                        <div class="input-group mb-3" id="rowInputImg2">
                             <div class="custom-file">
-                              <input type="file" class="custom-file-input" id="inputNewImage2" aria-describedby="inputGroupFileAddon04">
-                              <label class="custom-file-label" for="inputNewImage2">Agregar otra imagen</label>
+                                <input type="file" class="custom-file-input" id="inputNewImage2" aria-describedby="inputGroupFileAddon04">
+                                <label class="custom-file-label" for="inputNewImage2">Agregar otra imagen</label>
                             </div>
                         </div>
-                        <br>
-                        <button class="btn btn-dark btn-sm btn-block" id="btnFileExtra" type="button" style="display:none">Ver archivo adicional</button>
-                        <br>
+                        <button class="btn btn-outline-primary btn-sm btn-block mb-3" id="btnFileExtra" type="button" style="display:none"><i class="fas fa-file-download mr-1"></i>Ver archivo adicional</button>
                         <div class="input-group" id="rowInputFileExtra" style="display:none">
-                            <input type="file" class="custom-file-input" id="inputFileExtraModal">
-                            <label class="custom-file-label" for="inputFileExtraModal">Subir archivo extra</label>
-                            <br>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputFileExtraModal">
+                                <label class="custom-file-label" for="inputFileExtraModal">Subir archivo adicional</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="row g-1">
-                    <div class="col-md-12">
-                        <button type="button" id="btnNewTask" class="btn btn-success btn-block"disabled>Agregar nueva tarea + </button>
-                    </div>
-                </div>
-                <div class="table-responsive" style="display: none;" id="rowTableTaskEdit">
-                    <table class="table table-hover table-sm">
-                        <thead>
-                          <tr>
-                            <th scope="col">Descripcion</th>
+            </section>
+        </div>
+    </div>
+
+    <section class="card ticket-section">
+        <div class="card-header"><i class="fas fa-tasks"></i><span>Actividades del ticket</span></div>
+        <div class="card-body">
+            <button type="button" id="btnNewTask" class="btn btn-success btn-sm" disabled><i class="fas fa-plus mr-1"></i>Agregar nueva tarea</button>
+            <div class="table-responsive" style="display:none;" id="rowTableTaskEdit">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Descripción</th>
                             <th scope="col">Estado</th>
                             <th scope="col">Agente</th>
-                            <th scope="col">Fecha finalización</th>
+                            <th scope="col">Fecha de finalización</th>
                             <th scope="col">Minutos trabajados</th>
-                            <th scope="col">Imagen del requerimiento solucionado</th>
+                            <th scope="col">Imagen de solución</th>
                             <th scope="col">Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody id="tbodyListTask">
-                          
-                        </tbody>
-                      </table>
-                </div>
-            </form>
-        </div>
-        <div class="card-footer">
-            <div class="row p-1">
-                <div class="col-md-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="checkReportClient" style="display: none;">
-                        <label class="form-check-label" id="labelCheckReportClient" for="checkReportClient">
-                          Reporte para cliente
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-1">
-                <div class="col-md-12">
-                    <button class="btn btn-danger btn-sm" id="btnGenerarReporte" style="display: none;">Generar Reporte</button>
-                    <button class="btn btn-success btn-sm" id="btnFinisTasks" style="display: none;">Finalizar Tareas</button>
-                    <button class="btn btn-warning btn-sm" id="btnTerminarTareas" style="display: none;">Enviar Tareas</button>
-                    <button class="btn btn-info btn-sm" id="btnAsignarAgente" style="display: none;">Asignar Agente</button>
-                    <button class="btn btn-success btn-sm" id="btnFinishTicket">Cerrar el ticket</button>
-                    <button class="btn btn-dark btn-sm" id="btnNotificar" style="display: none;">Notificar al Administrador</button>
-                    <button class="btn btn-dark btn-sm" id="btnNotificarSolicitante" style="display: none;">Notificar al solicitante</button>
-                    <button class="btn btn-warning btn-sm" id="btnEditarDatos" style="display: none;">Editar datos</button>
-                    <button class="btn btn-danger btn-sm" id="btnRegresarEstado" style="display: none;">Solicitud adicional</button>
-                    <button class="btn btn-danger btn-sm" id="btnNullTicket" style="display: none;">Anular ticket</button>
-                    <div class="d-flex justify-content-end">
-                        <p class="text-end" id="textAgentModified"></p>
-                    </div>
-                </div>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyListTask"></tbody>
+                </table>
             </div>
         </div>
-      </div>
+    </section>
+
+    <section class="ticket-actions">
+        <div class="ticket-client-report mb-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkReportClient" style="display:none;">
+                <label class="form-check-label" id="labelCheckReportClient" for="checkReportClient">Preparar reporte para el cliente</label>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap align-items-center">
+            <button class="btn btn-danger btn-sm" id="btnGenerarReporte" style="display:none;"><i class="fas fa-file-pdf mr-1"></i>Generar reporte PDF</button>
+            <button class="btn btn-success btn-sm" id="btnFinisTasks" style="display:none;"><i class="fas fa-check mr-1"></i>Finalizar tareas</button>
+            <button class="btn btn-warning btn-sm" id="btnTerminarTareas" style="display:none;"><i class="fas fa-paper-plane mr-1"></i>Enviar tareas</button>
+            <button class="btn btn-info btn-sm" id="btnAsignarAgente" style="display:none;"><i class="fas fa-user-check mr-1"></i>Asignar agente</button>
+            <button class="btn btn-success btn-sm" id="btnFinishTicket"><i class="fas fa-lock mr-1"></i>Cerrar ticket</button>
+            <button class="btn btn-dark btn-sm" id="btnNotificar" style="display:none;"><i class="fas fa-bell mr-1"></i>Notificar al administrador</button>
+            <button class="btn btn-dark btn-sm" id="btnNotificarSolicitante" style="display:none;"><i class="fas fa-envelope mr-1"></i>Notificar al solicitante</button>
+            <button class="btn btn-warning btn-sm" id="btnEditarDatos" style="display:none;"><i class="fas fa-edit mr-1"></i>Editar datos</button>
+            <button class="btn btn-danger btn-sm" id="btnRegresarEstado" style="display:none;"><i class="fas fa-undo mr-1"></i>Solicitud adicional</button>
+            <button class="btn btn-danger btn-sm" id="btnNullTicket" style="display:none;"><i class="fas fa-ban mr-1"></i>Anular ticket</button>
+        </div>
+        <div class="d-flex justify-content-end">
+            <p class="text-right" id="textAgentModified"></p>
+        </div>
+    </section>
 </div>
 
-<script src="{% static 'dist/utils/detail_tickets.js' %}?v=20261013-2"></script>
+<script src="{% static 'dist/utils/detail_tickets.js' %}?v=20261014-1"></script>
 <script type="text/javascript">
-    // Incorporar datos directamente en el script
     window.resultados_agentes_data = [
         {% for agente in resultados_agentes_data %}
-            {
-                id: "{{ agente.id }}",
-                full_name: "{{ agente.full_name }}"
-            },
+            { id: "{{ agente.id }}", full_name: "{{ agente.full_name }}" },
         {% endfor %}
     ];
-
     window.resultados_solicitantes_data = [
         {% for agente in resultados_solicitantes_data %}
-            {
-                id: "{{ agente.id }}",
-                full_name: "{{ agente.full_name }}"
-            },
+            { id: "{{ agente.id }}", full_name: "{{ agente.full_name }}" },
         {% endfor %}
     ];
-
 </script>
 {% endblock %}
