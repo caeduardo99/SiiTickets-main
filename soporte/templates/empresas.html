@@ -111,7 +111,7 @@
         </div>
         <!-- Sección de listado de empresas -->
         <div class="tab-pane fade" id="vertickets">
-            <div class="companies-search"><i class="fas fa-search" aria-hidden="true"></i><input type="text" class="form-control" id="buscarSolicitanteEmpresa" placeholder="Buscar por empresa, dirección, teléfono o correo..." aria-label="Buscar empresas"></div>
+            <div class="companies-search"><i class="fas fa-search" aria-hidden="true"></i><input type="text" class="form-control" id="buscarSolicitanteEmpresa" placeholder="Buscar por empresa, solicitante, RUC, dirección, teléfono o correo..." aria-label="Buscar empresas"></div>
             <div class="card mb-3">
                 <div class="card-header companies-card-header"><i class="fas fa-address-book" aria-hidden="true"></i><span>Empresas registradas</span></div>
                 <div class="card-body">
@@ -121,6 +121,8 @@
                                 <tr>
                                     <th>NumEmpresa</th>
                                     <th>Empresa</th>
+                                    <th>Solicitante principal</th>
+                                    <th>RUC / identificación</th>
                                     <th>Dirección</th>
                                     <th>Teléfono</th>
                                     <th>Email</th>
@@ -397,6 +399,8 @@
                     var newRow = '<tr>' +
                         '<td>' + empresa.NumEmpresa + '</td>' +
                         '<td>' + empresa.nombreEmpresa + '</td>' +
+                        '<td>' + (empresa.solicitanteNombre || 'Sin solicitante') + '</td>' +
+                        '<td>' + (empresa.solicitanteRuc || '—') + '</td>' +
                         '<td>' + empresa.direccion + '</td>' +
                         '<td>' + empresa.telefono + '</td>' +
                         '<td>' + empresa.email + '</td>' +
