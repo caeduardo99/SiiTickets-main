@@ -96,8 +96,14 @@
                             <input class="form-control" id="email" name="email"
                                 placeholder="Ingrese el Correo de la Empresa">
                         </div>
+                        <div class="col-12 mt-2 mb-2"><hr><h5><i class="fas fa-user-tie mr-2"></i>Solicitante principal</h5><p class="text-muted small mb-3">Se creará automáticamente junto con la empresa. Después podrás editar sus datos.</p></div>
+                        <div class="form-group col-md-6"><label for="solicitanteNombre">Nombre del solicitante</label><input class="form-control" id="solicitanteNombre" name="solicitanteNombre" placeholder="Nombre de la persona de contacto" required></div>
+                        <div class="form-group col-md-6"><label for="solicitanteRuc">RUC / identificación</label><input class="form-control" id="solicitanteRuc" name="solicitanteRuc" maxlength="13" placeholder="RUC o identificación"></div>
+                        <div class="form-group col-md-6"><label for="solicitanteTelefono">Teléfono del solicitante</label><input class="form-control" id="solicitanteTelefono" name="solicitanteTelefono" placeholder="Teléfono de contacto"></div>
+                        <div class="form-group col-md-6"><label for="solicitanteCorreo">Correo del solicitante</label><input type="email" class="form-control" id="solicitanteCorreo" name="solicitanteCorreo" placeholder="Correo de contacto"></div>
+                        <div class="form-group col-12"><label for="solicitanteDireccion">Dirección del solicitante</label><input class="form-control" id="solicitanteDireccion" name="solicitanteDireccion" placeholder="Dirección de contacto"></div>
                         <div class="form-group col-12">
-                            <button type="submit" class="btn btn-dark">Crear Empresa</button>
+                            <button type="submit" class="btn btn-dark"><i class="fas fa-building mr-1"></i> Crear empresa y solicitante</button>
                         </div>
                     </form>
                 </div>
@@ -168,6 +174,14 @@
                                 <label for="email">Correo Empresa:</label>
                                 <input type="text" class="form-control" id="editEmail" name="editEmail">
                             </div>
+                            <hr>
+                            <h5 class="mt-3"><i class="fas fa-user-tie mr-2"></i>Solicitante principal</h5>
+                            <input type="hidden" id="editIdSolicitante">
+                            <div class="form-group"><label for="editSolicitanteNombre">Nombre</label><input type="text" class="form-control" id="editSolicitanteNombre"></div>
+                            <div class="form-group"><label for="editSolicitanteRuc">RUC / identificación</label><input type="text" maxlength="13" class="form-control" id="editSolicitanteRuc"></div>
+                            <div class="form-group"><label for="editSolicitanteTelefono">Teléfono</label><input type="text" class="form-control" id="editSolicitanteTelefono"></div>
+                            <div class="form-group"><label for="editSolicitanteCorreo">Correo</label><input type="email" class="form-control" id="editSolicitanteCorreo"></div>
+                            <div class="form-group"><label for="editSolicitanteDireccion">Dirección</label><input type="text" class="form-control" id="editSolicitanteDireccion"></div>
                             <div class="row">
                                 <div class="col-md-4" style="margin-top: 5px;">
                                     <button type="button" id="btnSaveChange" class="btn btn-dark btn-sm btn-block"
@@ -417,6 +431,12 @@
                 $('#editDireccion').val(empresa[0].direccion);
                 $('#editTelefono').val(empresa[0].telefono);
                 $('#editEmail').val(empresa[0].email);
+                $('#editIdSolicitante').val(empresa[0].idSolicitante || '');
+                $('#editSolicitanteNombre').val(empresa[0].solicitanteNombre || '');
+                $('#editSolicitanteRuc').val(empresa[0].solicitanteRuc || '');
+                $('#editSolicitanteTelefono').val(empresa[0].solicitanteTelefono || '');
+                $('#editSolicitanteCorreo').val(empresa[0].solicitanteCorreo || '');
+                $('#editSolicitanteDireccion').val(empresa[0].solicitanteDireccion || '');
 
                 // Iteracion para la tabla
                 empresa.forEach((registro) => {
@@ -572,41 +592,65 @@
 
     function guardarCambiosEmpresa() {
         var numEmpresa = $('#modalNumEmpresa').val();
-        var nombreEmpresa = $('#editNombreEmpresa').val();
-        var direccion = $('#editDireccion').val();
-        var telefono = $('#editTelefono').val();
-        var email = $('#editEmail').val();
+        var datosEmpresa = {
+            numEmpresa: numEmpresa,
+            nombreEmpresa: $('#editNombreEmpresa').val(),
+            direccion: $('#editDireccion').val(),
+            telefono: $('#editTelefono').val(),
+            email: $('#editEmail').val(),
+            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+        };
+        var datosSolicitante = {
+            idEmpresa: numEmpresa,
+            idSolicitante: $('#editIdSolicitante').val(),
+            nombre: $('#editSolicitanteNombre').val(),
+            ruc: $('#editSolicitanteRuc').val(),
+            telefono: $('#editSolicitanteTelefono').val(),
+            correo: $('#editSolicitanteCorreo').val(),
+            direccion: $('#editSolicitanteDireccion').val(),
+            csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
+        };
 
-        toastr.info('Se estan realizando cambios en la información', 'Guardando...');
+        if (!datosSolicitante.nombre.trim()) {
+            toastr.warning('Ingresa el nombre del solicitante principal.');
+            return;
+        }
         btnSaveChange.disabled = true;
+        toastr.info('Guardando empresa y solicitante...', 'Guardando');
+
         $.ajax({
             url: '{% url "actualizar_empresa" %}',
             method: 'POST',
-            data: {
-                numEmpresa: numEmpresa,
-                nombreEmpresa: nombreEmpresa,
-                direccion: direccion,
-                telefono: telefono,
-                email: email,
-                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-            },
+            data: datosEmpresa,
             success: function (response) {
-                if (response.success) {
-                    toastr.success('Los cambios han sido guardados correctamente', 'Cambios guardados');
+                if (!response.success) {
                     btnSaveChange.disabled = false;
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 3000);
-                } else {
-                    toastr.success('Los cambios han sido guardados correctamente', 'Cambios guardados');
-                    btnSaveChange.disabled = false;
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 3000);
+                    toastr.error(response.error || 'No se pudo actualizar la empresa.');
+                    return;
                 }
+                $.ajax({
+                    url: '{% url "guardar_solicitante_empresa" %}',
+                    method: 'POST',
+                    data: datosSolicitante,
+                    success: function (solicitanteResponse) {
+                        btnSaveChange.disabled = false;
+                        if (solicitanteResponse.success) {
+                            toastr.success('La empresa y su solicitante se actualizaron correctamente.');
+                            setTimeout(function () { window.location.reload(); }, 1200);
+                        } else {
+                            toastr.error(solicitanteResponse.message || 'La empresa se guardó, pero no se pudo guardar el solicitante.');
+                        }
+                    },
+                    error: function (xhr) {
+                        btnSaveChange.disabled = false;
+                        var msg = xhr.responseJSON && xhr.responseJSON.message;
+                        toastr.error(msg || 'La empresa se guardó, pero ocurrió un error al guardar el solicitante.');
+                    }
+                });
             },
-            error: function (error) {
-                mostrarMensaje('error', 'Error al actualizar la empresa: ' + error.statusText);
+            error: function (xhr) {
+                btnSaveChange.disabled = false;
+                toastr.error((xhr.responseJSON && xhr.responseJSON.error) || 'Error al actualizar la empresa.');
             }
         });
     }
