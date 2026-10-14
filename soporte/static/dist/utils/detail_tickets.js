@@ -1283,7 +1283,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   { text: `Inicio: ${activity.fechainicio || "No registrado"}    Finalización: ${activity.fechafinal || "No registrada"}`, style: "smallText", margin: [0, 3, 0, 0] }
                 ] : []),
                 ...(activity.imagen_actividades && typeof activity.imagen_actividades === "string" && activity.imagen_actividades.startsWith("data:image/") ? [
-                  { image: activity.imagen_actividades, fit: [440, 280], alignment: "center", margin: [0, 10, 0, 2] }
+                  { image: activity.imagen_actividades, fit: [360, 190], alignment: "center", margin: [0, 7, 0, 2] }
                 ] : [])
               ]
             }]]
@@ -1297,8 +1297,7 @@ document.addEventListener("DOMContentLoaded", function () {
             paddingTop: () => 9,
             paddingBottom: () => 9
           },
-          margin: [0, 0, 0, 9],
-          unbreakable: true
+          margin: [0, 0, 0, 7]
         });
       });
     } else {
