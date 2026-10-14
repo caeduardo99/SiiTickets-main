@@ -61,8 +61,11 @@
                         <i class="far fa-bell"></i>
                         <span class="badge badge-warning navbar-badge" id="numberAlertTotalVenci"></span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <h6 class="dropdown-header">Actividades pendientes</h6>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 430px; overflow-y: auto;">
+                        <h6 class="dropdown-header">Notificaciones de asignación</h6>
+                        <div id="assignmentNotificationsList">
+                            <span class="dropdown-item-text text-muted small">Cargando notificaciones...</span>
+                        </div>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" id="goToDayliView"></a>
                     </div>
@@ -556,6 +559,55 @@
 
 
 </script>
+
+<script>
+(function () {
+    function loadAssignmentNotifications() {
+        var list = document.getElementById("assignmentNotificationsList");
+        var badge = document.getElementById("numberAlertTotalVenci");
+        if (!list || !badge) return;
+        fetch("{% url 'notificaciones_asignacion' %}", { credentials: "same-origin" })
+            .then(function (response) { if (!response.ok) throw new Error("No se pudieron cargar las notificaciones"); return response.json(); })
+            .then(function (data) {
+                var notifications = data.notificaciones || [];
+                var seenKey = "siitickets_asignaciones_vistas_" + "{{ request.user.id }}";
+                var seen = [];
+                try { seen = JSON.parse(localStorage.getItem(seenKey) || "[]"); } catch (e) { seen = []; }
+                var unread = notifications.filter(function (item) { return seen.indexOf(String(item.id)) === -1; });
+                badge.textContent = unread.length ? unread.length : "";
+                list.innerHTML = "";
+                if (!notifications.length) {
+                    list.innerHTML = '<span class="dropdown-item-text text-muted small">No hay asignaciones nuevas de Joselo.</span>';
+                    return;
+                }
+                notifications.forEach(function (item) {
+                    var link = document.createElement("a");
+                    link.className = "dropdown-item";
+                    link.href = item.url;
+                    link.style.whiteSpace = "normal";
+                    link.innerHTML = '<div class="d-flex align-items-start"><i class="fas fa-ticket-alt text-primary mr-2 mt-1"></i><div><strong></strong><div class="small text-muted"></div><div class="small text-muted"></div></div></div>';
+                    link.querySelector("strong").textContent = item.mensaje;
+                    link.querySelectorAll(".small")[0].textContent = item.asunto + " · " + item.empresa;
+                    link.querySelectorAll(".small")[1].textContent = item.fecha ? new Date(item.fecha).toLocaleString("es-EC") : "";
+                    if (seen.indexOf(String(item.id)) === -1) link.style.backgroundColor = "#eef5ff";
+                    link.addEventListener("click", function () {
+                        if (seen.indexOf(String(item.id)) === -1) {
+                            seen.push(String(item.id));
+                            try { localStorage.setItem(seenKey, JSON.stringify(seen.slice(-200))); } catch (e) {}
+                        }
+                    });
+                    list.appendChild(link);
+                });
+            })
+            .catch(function (error) { console.error(error); list.innerHTML = '<span class="dropdown-item-text text-muted small">No fue posible cargar las notificaciones.</span>'; });
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        loadAssignmentNotifications();
+        window.setInterval(loadAssignmentNotifications, 60000);
+    });
+})();
+</script>
+
 <!-- Page specific script -->
 <script>
     $(document).ready(function () {
