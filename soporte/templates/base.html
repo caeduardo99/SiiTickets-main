@@ -391,6 +391,7 @@
                 (!item.actividadRealizada || item.actividadRealizada === "")
             );
             const numDayliNotification = filteredObjects.length;
+            window.siiticketsDailyNotifications = numDayliNotification;
             numberAlertTotalVenci.innerHTML = numDayliNotification;
             goToDayliView.href = "/view_control_panel";
             goToDayliView.innerHTML = `<i class="fas fa-file mr-2"></i> Diario de trabajo <span class="float-right text-muted text-sm">${numDayliNotification} Actividades</span>`;
@@ -419,6 +420,7 @@
                 (!item.actividadRealizada || item.actividadRealizada === "")
             );
             const numDayliNotification = filteredObjects.length;
+            window.siiticketsDailyNotifications = numDayliNotification;
             numberAlertTotalVenci.innerHTML = numDayliNotification;
             goToDayliView.href = "/view_control_panel";
             goToDayliView.innerHTML = `<i class="fas fa-file mr-2"></i> Diario de trabajo <span class="float-right text-muted text-sm">${numDayliNotification} Actividades</span>`;
@@ -574,7 +576,8 @@
                 var seen = [];
                 try { seen = JSON.parse(localStorage.getItem(seenKey) || "[]"); } catch (e) { seen = []; }
                 var unread = notifications.filter(function (item) { return seen.indexOf(String(item.id)) === -1; });
-                badge.textContent = unread.length ? unread.length : "";
+                var totalAlerts = unread.length + (Number(window.siiticketsDailyNotifications) || 0);
+                badge.textContent = totalAlerts ? totalAlerts : "";
                 list.innerHTML = "";
                 if (!notifications.length) {
                     list.innerHTML = '<span class="dropdown-item-text text-muted small">No hay asignaciones nuevas de Joselo.</span>';
