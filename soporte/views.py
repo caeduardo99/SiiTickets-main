@@ -77,6 +77,9 @@ def configuracion_usuario(request):
     mensaje = ""
     tipo_mensaje = "info"
     password_form = PasswordChangeForm(user=request.user)
+    password_form.fields["old_password"].label = "Contraseña actual"
+    password_form.fields["new_password1"].label = "Nueva contraseña"
+    password_form.fields["new_password2"].label = "Confirmar nueva contraseña"
 
     if request.method == "POST":
         accion = request.POST.get("accion", "")
@@ -121,13 +124,17 @@ def configuracion_usuario(request):
 
         elif accion == "contrasena":
             password_form = PasswordChangeForm(user=request.user, data=request.POST)
+            password_form.fields["old_password"].label = "Contraseña actual"
+            password_form.fields["old_password"].error_messages["password_incorrect"] = "La contraseña actual es incorrecta. Verifica que esté bien escrita."
+            password_form.fields["new_password1"].label = "Nueva contraseña"
+            password_form.fields["new_password2"].label = "Confirmar nueva contraseña"
             if password_form.is_valid():
                 usuario_actualizado = password_form.save()
                 update_session_auth_hash(request, usuario_actualizado)
                 mensaje, tipo_mensaje = "La contraseña se cambió correctamente.", "success"
                 password_form = PasswordChangeForm(user=request.user)
             else:
-                mensaje, tipo_mensaje = "Revisa los campos de contraseña indicados.", "danger"
+                mensaje, tipo_mensaje = "No se pudo cambiar la contraseña. Revisa los errores indicados debajo de cada campo.", "danger"
 
     context = {
         "nombre_usuario": request.user.username,
