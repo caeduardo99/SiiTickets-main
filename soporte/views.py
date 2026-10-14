@@ -3110,9 +3110,16 @@ def ticketactualizacioncreadosid(request):
 def empresascreados(request):
     # Construir la consulta SQL
     consulta_sql = """
-        select se.id as NumEmpresa, se.nombreEmpresa, se.direccion as direccion,
-se.telefono as telefono, se.email as email
-from soporte_empresa se
+        SELECT se.id AS NumEmpresa, se.nombreEmpresa, se.direccion AS direccion,
+        se.telefono AS telefono, se.email AS email,
+        ss.nombreApellido AS solicitanteNombre, ss.ruc AS solicitanteRuc
+        FROM soporte_empresa se
+        LEFT JOIN soporte_solicitante ss
+            ON ss.id = (
+                SELECT MIN(ss2.id)
+                FROM soporte_solicitante ss2
+                WHERE ss2.idEmpresa_id = se.id
+            )
 
         """
     connection = connections["default"]
