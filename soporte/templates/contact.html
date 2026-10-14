@@ -2,28 +2,31 @@
 
 {% load static %}
 {% block content %}
+<style>
+.contact-page{padding:1rem 1.25rem;color:#243247}.contact-header{padding:1.4rem 1.5rem;margin-bottom:1rem;border-radius:16px;color:#fff;background:linear-gradient(120deg,#17365D,#1D4E89 68%,#2875A8);box-shadow:0 8px 24px #17365d24}.contact-header h3{margin:0;color:#fff;font-weight:750}.contact-page .contact-card{border:1px solid #e3eaf2;border-radius:16px;overflow:hidden;box-shadow:0 6px 22px #1e32500f}.contact-page .contact-info{padding:2rem 1.25rem;background:#fff}.contact-page .contact-logo{width:132px;height:132px;object-fit:contain;margin-bottom:1.25rem}.contact-page .contact-company{color:#17365D;font-size:1.15rem;font-weight:750;margin-bottom:.5rem}.contact-page .contact-address{color:#526176;line-height:1.8}.contact-page .contact-map{width:100%;height:420px;border:0}.contact-page .contact-whatsapp{padding:.7rem 1.1rem;border-radius:9px;font-weight:700;background:#168653;border-color:#168653}@media(max-width:767.98px){.contact-page{padding:.6rem}.contact-page .contact-map{height:320px}.contact-page .contact-info{padding:1.5rem 1rem}}
+</style>
     <!-- Contenido específico de la página de dashboard -->
-<section class="content-header">
+<section class="content-header contact-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3>Contacto</h3>
+            <h3><i class="fas fa-headset mr-2" aria-hidden="true"></i>Contacto</h3>
           </div>
 
         </div>
       </div><!-- /.container-fluid -->
     </section>
-    <div class="content">
-         <div class="card">
-  <div class="card-body row">
-    <div class="col-5 text-center d-flex align-items-center justify-content-center">
+    <div class="content contact-page">
+         <div class="card contact-card">
+  <div class="card-body row no-gutters">
+    <div class="col-md-4 col-12 text-center d-flex align-items-center justify-content-center contact-info">
       <div class="">
-        <img src="{% static 'images/logoishida.png' %}" width="150" height="150" class="img-fluid" alt="...">
-        <p class="lead mb-5">Presidente Rocafuerte 1-09<br>
+        <img src="{% static 'images/logoishida.png' %}" class="img-fluid contact-logo" alt="Logo de Ishida Software">
+        <div class="contact-company">Ishida Software</div><p class="lead mb-4 contact-address">Presidente Rocafuerte 1-09<br>
           Telefono: +593 99 460 6970
         </p>
         <!-- Agregar el botón de WhatsApp -->
-        <a href="https://wa.me/593994606970" target="_blank" class="btn btn-success"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="https://wa.me/593994606970" target="_blank" class="btn btn-success contact-whatsapp" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       </div>
     </div>
     <div class="col-7">
