@@ -1572,7 +1572,6 @@ def notificaciones_asignacion(request):
 
     asignaciones = cambioEstadoTicketSoporte.objects.filter(
         idAgente__username__iexact="joselo",
-        idEstadoAnterior_id=1,
         idEstadoActual_id=3,
     ).select_related(
         "numTicket", "numTicket__idSolicitante", "numTicket__idSolicitante__idEmpresa"
@@ -2561,6 +2560,7 @@ def asign_admin_ticket_support(request, id_agente, id_ticket, id_user_modified):
         fecha_actual = datetime.now()
         fechaAsignacion = fecha_actual.strftime("%Y-%m-%d %H:%M:%S")
         ticket = TicketSoporte.objects.get(id=id_ticket)
+        estado_anterior_id = ticket.idestado_id
         comentario_adicional = request.GET.get('comentario_adicional')
         # Cambio de agente administrador
         ticket.idAgente_id = id_agente
@@ -2573,7 +2573,7 @@ def asign_admin_ticket_support(request, id_agente, id_ticket, id_user_modified):
         # Cambio para la tabla de estados
         cambioEstadoTicketSoporte.objects.create(
             numTicket=ticket,
-            idEstadoAnterior=EstadosTicket.objects.get(id=1),
+            idEstadoAnterior=EstadosTicket.objects.get(id=estado_anterior_id),
             idEstadoActual=EstadosTicket.objects.get(id=3),
             fechaCambio=fechaAsignacion,
             # Registrar quién realizó la asignación, para auditoría e historial.
@@ -2863,10 +2863,19 @@ def cerrar_ticket(request, id_ticket, id_usuario_modified):
         fecha_finalizacion = fecha_actual.strftime("%Y-%m-%d %H:%M:%S")
 
         ticket = TicketSoporte.objects.get(id=id_ticket)
+        estado_anterior_id = ticket.idestado_id
+        usuario_modifica = User.objects.get(id=id_usuario_modified)
         ticket.idestado_id = 5
         ticket.fechaFinalizacionReal = fecha_finalizacion
-        ticket.idAgenteModificado = User.objects.get(id=id_usuario_modified)
+        ticket.idAgenteModificado = usuario_modifica
         ticket.save()
+        cambioEstadoTicketSoporte.objects.create(
+            numTicket=ticket,
+            idEstadoAnterior=EstadosTicket.objects.get(id=estado_anterior_id),
+            idEstadoActual=EstadosTicket.objects.get(id=5),
+            fechaCambio=fecha_finalizacion,
+            idAgente=usuario_modifica,
+        )
 
         return JsonResponse(
             {"status": "success", "message": "El ticket ha sido cerrado"}
@@ -2882,8 +2891,16 @@ def cerrar_ticket(request, id_ticket, id_usuario_modified):
 def regresar_estado_proceso(request, id_ticket):
     try:
         ticket = TicketSoporte.objects.get(id=id_ticket)
+        estado_anterior_id = ticket.idestado_id
         ticket.idestado_id = 2
         ticket.save()
+        cambioEstadoTicketSoporte.objects.create(
+            numTicket=ticket,
+            idEstadoAnterior=EstadosTicket.objects.get(id=estado_anterior_id),
+            idEstadoActual=EstadosTicket.objects.get(id=2),
+            fechaCambio=datetime.now(),
+            idAgente=request.user if request.user.is_authenticated else ticket.idAgente,
+        )
 
         actividades = ActividadPrincipalSoporte.objects.filter(
             idTicketSoporte=id_ticket
