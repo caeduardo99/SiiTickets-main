@@ -205,13 +205,19 @@
 
 
     <section class="card ticket-section" id="ticketHistorySection">
-        <div class="card-header"><i class="fas fa-history"></i><span>Historial completo del ticket</span></div>
-        <div class="card-body">
-            <p class="text-muted small mb-3">Registro cronológico de creación, cambios de estado, actividades y trabajo realizado.</p>
-            <div id="ticketHistoryTimeline" class="ticket-history-timeline">
-                <div class="text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Cargando historial...</div>
+        <details id="ticketHistoryDetails">
+            <summary class="card-header" style="cursor:pointer;list-style:none;user-select:none;">
+                <i class="fas fa-history"></i>
+                <span>Historial completo del ticket</span>
+                <span class="ml-auto text-muted small"><i class="fas fa-chevron-down mr-1"></i> Clic para ver u ocultar</span>
+            </summary>
+            <div class="card-body">
+                <p class="text-muted small mb-3">Registro cronológico de creación, cambios de estado y actividades registradas.</p>
+                <div id="ticketHistoryTimeline" class="ticket-history-timeline">
+                    <div class="text-muted">Abre esta sección para cargar el historial.</div>
+                </div>
             </div>
-        </div>
+        </details>
     </section>
     <section class="ticket-actions">
         <div class="ticket-client-report mb-2">
@@ -238,7 +244,7 @@
     </section>
 </div>
 
-<script src="{% static 'dist/utils/detail_tickets.js' %}?v=20261014-3"></script>
+<script src="{% static 'dist/utils/detail_tickets.js' %}?v=20261014-4"></script>
 <script type="text/javascript">
     window.resultados_agentes_data = [
         {% for agente in resultados_agentes_data %}
