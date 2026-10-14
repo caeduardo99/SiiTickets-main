@@ -121,71 +121,75 @@ if (mostrarCampo == "True") {
   formularioAgente.style.display = "none";
 }
 
-verticketsCompletos.addEventListener("click", function () {
-  ticketsCompletos = true;
-  toastr.info("Cargando tickets", "Espere ...")
-  // Consulta a la base para la obtencion de todos los tickets disponibles
-  fetch("ticketsoportescreados/")
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.length != 0) {
-        const mapaAgrupado = new Map();
-        data.forEach((proyecto) => {
-          const numTicket = proyecto.NumTicket;
-          if (!mapaAgrupado.has(numTicket)) {
-            mapaAgrupado.set(numTicket, proyecto);
-          }
-        });
-        const resultadosAgrupados = Array.from(mapaAgrupado.values());
-        resultadosProyectos = resultadosAgrupados;
+let ticketsCache = null;
+let ticketsRequest = null;
 
-        tabular(resultadosProyectos);
-      } else {
-        var row = document.createElement("tr");
-        var cell = document.createElement("td");
-        cell.textContent =
-          "No hay tickets de actualizacion creados en ningun estado para este usuario.";
-        cell.colSpan = 7;
+function cargarTickets(forceRefresh = false) {
+  if (forceRefresh) {
+    ticketsCache = null;
+    ticketsRequest = null;
+  }
+  if (ticketsCache) return Promise.resolve(ticketsCache);
+  if (ticketsRequest) return ticketsRequest;
+
+  ticketsRequest = fetch("ticketsoportescreados/")
+    .then((response) => {
+      if (!response.ok) throw new Error("No se pudieron cargar los tickets.");
+      return response.json();
+    })
+    .then((data) => {
+      const mapaAgrupado = new Map();
+      data.forEach((ticket) => {
+        if (!mapaAgrupado.has(ticket.NumTicket)) {
+          mapaAgrupado.set(ticket.NumTicket, ticket);
+        }
+      });
+      ticketsCache = Array.from(mapaAgrupado.values());
+      return ticketsCache;
+    })
+    .catch((error) => {
+      ticketsRequest = null;
+      throw error;
+    });
+
+  return ticketsRequest;
+}
+
+function mostrarTickets(completos) {
+  ticketsCompletos = completos;
+  tBodyTicketSoporte = completos ? tbodyTicketComplete : document.getElementById("tbodyTicketTable");
+  tBodyTicketSoporte.innerHTML = "";
+  toastr.info("Cargando tickets", "Espere ...");
+
+  cargarTickets()
+    .then((tickets) => {
+      resultadosProyectos = tickets.slice();
+      if (!resultadosProyectos.length) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.textContent = completos
+          ? "No hay tickets completados o anulados para este usuario."
+          : "No hay tickets en proceso para este usuario.";
+        cell.colSpan = 8;
         cell.style.textAlign = "center";
         row.appendChild(cell);
         tBodyTicketSoporte.appendChild(row);
+        return;
       }
+      tabular(resultadosProyectos);
     })
-    .catch((error) => console.error("Error:", error));
+    .catch((error) => {
+      console.error("Error al cargar tickets:", error);
+      toastr.error("No se pudieron cargar los tickets. Intenta nuevamente.", "Error");
+    });
+}
+
+verticketsCompletos.addEventListener("click", function () {
+  mostrarTickets(true);
 });
 
 vertickets.addEventListener("click", function () {
-  ticketsCompletos = false;
-  toastr.info("Cargando tickets", "Espere ...")
-  // Consulta a la base para la obtencion de todos los tickets disponibles
-  fetch("ticketsoportescreados/")
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.length != 0) {
-        const mapaAgrupado = new Map();
-        data.forEach((proyecto) => {
-          const numTicket = proyecto.NumTicket;
-          if (!mapaAgrupado.has(numTicket)) {
-            mapaAgrupado.set(numTicket, proyecto);
-          }
-        });
-        const resultadosAgrupados = Array.from(mapaAgrupado.values());
-        resultadosProyectos = resultadosAgrupados;
-
-        tabular(resultadosProyectos);
-      } else {
-        tBodyTicketSoporte.innerHTML = ""
-        var row = document.createElement("tr");
-        var cell = document.createElement("td");
-        cell.textContent =
-          "No hay tickets de actualizacion creados en ningun estado para este usuario.";
-        cell.colSpan = 7;
-        cell.style.textAlign = "center";
-        row.appendChild(cell);
-        tBodyTicketSoporte.appendChild(row);
-      }
-    })
-    .catch((error) => console.error("Error:", error));
+  mostrarTickets(false);
 });
 
 function orderByEstadoDesc(a, b) {
@@ -1062,34 +1066,39 @@ btnRegresarEstado.addEventListener("click", function () {
     });
 });
 
-// Input para buscar
-buscarSolicitante.addEventListener("keyup", function () {
-  const textoBusqueda = buscarSolicitante.value.toLowerCase();
-  const tabla = document.getElementById("tbodyTicketTable");
-  
-  Array.from(tabla.children).forEach(function (fila) {
-    const textoFila = fila.textContent.toLowerCase();
-    if ((textoFila.includes(textoBusqueda)) && (!fila.classList.contains("table-success")) && (!fila.classList.contains("table-danger"))) {
-      fila.style.display = "";
-    } else {
-      fila.style.display = "none";
-    }
-  });
+// Búsqueda local con debounce para evitar recorrer la tabla en cada pulsación.
+let timerBusquedaProceso;
+let timerBusquedaCompleto;
+
+function filtrarFilas(input, tbody, timer, clasesExcluir) {
+  clearTimeout(timer);
+  return setTimeout(() => {
+    const texto = input.value.trim().toLocaleLowerCase();
+    Array.from(tbody.children).forEach((fila) => {
+      const excluida = clasesExcluir.some((clase) => fila.classList.contains(clase));
+      const coincide = fila.textContent.toLocaleLowerCase().includes(texto);
+      fila.style.display = coincide && !excluida ? "" : "none";
+    });
+  }, 120);
+}
+
+buscarSolicitante.addEventListener("input", function () {
+  timerBusquedaProceso = filtrarFilas(
+    buscarSolicitante,
+    document.getElementById("tbodyTicketTable"),
+    timerBusquedaProceso,
+    ["table-success", "table-danger"]
+  );
 });
 
-buscarSolicitanteCompleto.addEventListener("keyup", function(){
-  const textoBusquedaCompleta = buscarSolicitanteCompleto.value.toLowerCase();
-  const tabla = document.getElementById("tbodyTicketComplete");
-
-  Array.from(tabla.children).forEach(function (fila) {
-    const textoFila = fila.textContent.toLowerCase();
-    if ((textoFila.includes(textoBusquedaCompleta)) && (fila.classList.length > 0) && (!fila.classList.contains("table-warning")) && (!fila.classList.contains("table-secondary"))) {
-      fila.style.display = "";
-    } else {
-      fila.style.display = "none";
-    }
-  });
-})
+buscarSolicitanteCompleto.addEventListener("input", function () {
+  timerBusquedaCompleto = filtrarFilas(
+    buscarSolicitanteCompleto,
+    document.getElementById("tbodyTicketComplete"),
+    timerBusquedaCompleto,
+    ["table-warning", "table-secondary"]
+  );
+});
 
 // Boton para ordenar la tabla
 btnStateAwait.addEventListener("click", function () {
