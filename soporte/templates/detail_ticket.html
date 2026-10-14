@@ -203,6 +203,16 @@
         </div>
     </section>
 
+
+    <section class="card ticket-section" id="ticketHistorySection">
+        <div class="card-header"><i class="fas fa-history"></i><span>Historial completo del ticket</span></div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Registro cronológico de creación, cambios de estado, actividades y trabajo realizado.</p>
+            <div id="ticketHistoryTimeline" class="ticket-history-timeline">
+                <div class="text-muted"><i class="fas fa-spinner fa-spin mr-2"></i>Cargando historial...</div>
+            </div>
+        </div>
+    </section>
     <section class="ticket-actions">
         <div class="ticket-client-report mb-2">
             <div class="form-check">
@@ -228,7 +238,7 @@
     </section>
 </div>
 
-<script src="{% static 'dist/utils/detail_tickets.js' %}?v=20261014-2"></script>
+<script src="{% static 'dist/utils/detail_tickets.js' %}?v=20261014-3"></script>
 <script type="text/javascript">
     window.resultados_agentes_data = [
         {% for agente in resultados_agentes_data %}
