@@ -1,30 +1,75 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<section class="content-header">
+<style>
+    .requesters-page { padding: 1rem 1.25rem 1.5rem; color: #243247; }
+    .requesters-header { margin: 0 0 1rem; padding: 1.4rem 1.5rem; border-radius: 16px; color: #fff; background: linear-gradient(120deg,#17365D 0%,#1D4E89 68%,#2875A8 100%); box-shadow: 0 8px 24px rgba(23,54,93,.14); }
+    .requesters-header h3 { margin: 0 0 .35rem; color: #fff; font-weight: 750; }
+    .requesters-header p { margin: 0; color: rgba(255,255,255,.88); font-size: .92rem; }
+    .requesters-page .nav-tabs { border-bottom: 1px solid #dce5ef; gap: .35rem; }
+    .requesters-page .nav-tabs .nav-link { padding: .8rem 1.05rem; color: #526176; font-weight: 650; border: 1px solid transparent; border-radius: 10px 10px 0 0; }
+    .requesters-page .nav-tabs .nav-link:hover { color: #1D4E89; background: #f2f7fc; }
+    .requesters-page .nav-tabs .nav-link.active { color: #17365D; background: #fff; border-color: #dce5ef #dce5ef #fff; }
+    .requesters-page .card { border: 1px solid #e3eaf2; border-radius: 14px; box-shadow: 0 4px 16px rgba(30,50,80,.045); overflow: hidden; }
+    .requesters-page .card-header.requesters-card-header { display: flex; align-items: center; gap: .65rem; padding: .95rem 1.15rem; color: #17365D; background: #fff; border-bottom: 1px solid #edf1f5; font-weight: 700; }
+    .requesters-page .requesters-card-header i { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: #edf4fb; color: #1D4E89; }
+    .requesters-page .card-body { padding: 1.2rem; }
+    .requesters-page label { color: #526176; font-size: .84rem; font-weight: 650; margin-bottom: .4rem; }
+    .requesters-page .form-control, .requesters-page .custom-select, .requesters-page .select2-container--default .select2-selection--single { min-height: 40px; border: 1px solid #dce4ed; border-radius: 8px; color: #243247; background-color: #fbfcfe; box-shadow: none; }
+    .requesters-page .form-control:focus, .requesters-page .custom-select:focus { border-color: #78a8d8; box-shadow: 0 0 0 .18rem rgba(29,78,137,.1); }
+    .requesters-page .select2-container { width: 100% !important; }
+    .requesters-page .select2-container--default .select2-selection--single { height: 40px; display: flex; align-items: center; }
+    .requesters-page .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 38px; padding-left: .75rem; color: #243247; }
+    .requesters-page .select2-container--default .select2-selection--single .select2-selection__arrow { height: 38px; }
+    .requesters-page .btn { border-radius: 8px; font-weight: 650; }
+    .requesters-page .btn-info { background: #1D4E89; border-color: #1D4E89; color: #fff; }
+    .requesters-page .btn-info:hover { background: #17365D; border-color: #17365D; }
+    .requesters-page .requesters-search { position: relative; margin: .25rem 0 1rem; }
+    .requesters-page .requesters-search i { position: absolute; top: 50%; left: .9rem; transform: translateY(-50%); color: #718096; }
+    .requesters-page #buscarSolicitanteUsuarios { padding-left: 2.4rem; min-height: 42px; background: #fff; }
+    .requesters-page .requesters-table-wrap { border: 1px solid #e5ebf2; border-radius: 10px; overflow: auto; max-height: 440px; }
+    .requesters-page #solicitantes-table { margin-bottom: 0; }
+    .requesters-page #solicitantes-table thead th { position: sticky; top: 0; z-index: 1; padding: .8rem .75rem; color: #43536a; background: #f1f5f9; border-top: 0; border-bottom: 1px solid #dfe7ef; font-size: .78rem; text-transform: uppercase; letter-spacing: .025em; white-space: nowrap; }
+    .requesters-page #solicitantes-table tbody td { padding: .72rem .75rem; vertical-align: middle; color: #34445a; border-color: #edf1f5; }
+    .requesters-page #solicitantes-table tbody tr:hover { background: #f7faff; }
+    #detallesSolicitante .modal-content { border: 0; border-radius: 14px; overflow: hidden; box-shadow: 0 18px 55px rgba(15,35,60,.2); }
+    #detallesSolicitante .modal-header { padding: 1rem 1.25rem; background: #f7faff; border-bottom: 1px solid #e5ebf2; }
+    #detallesSolicitante .modal-title { color: #17365D; font-weight: 750; }
+    #detallesSolicitante .modal-body { padding: 1.25rem; }
+    #detallesSolicitante .modal-footer { border-top: 1px solid #edf1f5; gap: .4rem; flex-wrap: wrap; }
+    @media (max-width: 767.98px) {
+        .requesters-page { padding: .6rem; }
+        .requesters-header { padding: 1.1rem; }
+        .requesters-page .card-body { padding: .9rem; }
+        .requesters-page .nav-tabs .nav-link { padding: .65rem .7rem; font-size: .88rem; }
+        #detallesSolicitante .modal-body { padding: .85rem; }
+        #detallesSolicitante .modal-footer .btn { width: 100%; }
+    }
+</style>
+
+<section class="content-header requesters-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h3>Solicitantes</h3>
+                <h3><i class="fas fa-users mr-2" aria-hidden="true"></i>Gestión de solicitantes</h3><p>Administra los datos de contacto y la empresa asociada a cada solicitante.</p>
             </div>
         </div>
     </div><!-- /.container-fluid -->
 </section>
-<div class="content">
+<div class="content requesters-page">
     <ul class="nav nav-tabs" id="myTabs">
         <li class="nav-item">
-            <a class="nav-link active" id="nuevousuario-tab" data-toggle="tab" href="#nuevousuario">Nuevo
-                Solicitante</a>
+            <a class="nav-link active" id="nuevousuario-tab" data-toggle="tab" href="#nuevousuario"><i class="fas fa-user-plus mr-2" aria-hidden="true"></i>Nuevo solicitante</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="verusuario-tab" data-toggle="tab" href="#verusuario">Solicitante</a>
+            <a class="nav-link" id="verusuario-tab" data-toggle="tab" href="#verusuario"><i class="fas fa-list mr-2" aria-hidden="true"></i>Listado de solicitantes</a>
         </li>
     </ul>
     <div class="tab-content mt-2">
         <!-- Contenido de la pestaña Nuevo Ticket -->
         <div class="tab-pane fade show active" id="nuevousuario">
             <div class="card mb-3">
-                <div class="card-header bg-info text-white">Datos del Solicitante</div>
+                <div class="card-header requesters-card-header"><i class="fas fa-user-plus" aria-hidden="true"></i><span>Datos del nuevo solicitante</span></div>
                 <div class="card-body">
                     <form class="form-row" method="post" action="{% url 'crear_solicitante' %}">
                         {% csrf_token %}
@@ -74,17 +119,11 @@
         </div>
 
         <div class="tab-pane fade" id="verusuario">
-            <div class="row g-1">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="buscarSolicitanteUsuarios" placeholder="Buscar...">
-                    </div>                    
-                </div>
-            </div>
+            <div class="requesters-search"><i class="fas fa-search" aria-hidden="true"></i><input type="text" class="form-control" id="buscarSolicitanteUsuarios" placeholder="Buscar por nombre, RUC, teléfono o empresa..." aria-label="Buscar solicitantes"></div>
             <div class="card mb-3">
-                <div class="card-header bg-info text-white">Detalles del Solicitante</div>
+                <div class="card-header requesters-card-header"><i class="fas fa-address-card" aria-hidden="true"></i><span>Solicitantes registrados</span></div>
                 <div class="card-body">
-                    <div class="table-responsive" style="overflow-y: auto; max-height: 400px;">
+                    <div class="table-responsive requesters-table-wrap">
                         <table class="table table-sm table-hover" id="solicitantes-table">
                             <thead>
                                 <tr>
@@ -113,7 +152,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="detallesSolicitanteLabel">Modal title</h5>
+                <h5 class="modal-title" id="detallesSolicitanteLabel"><i class="fas fa-user-edit mr-2" aria-hidden="true"></i>Editar solicitante</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -168,7 +207,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
-<script src="../static/dist/utils/soporte.js"></script>
+<script src="{% static 'dist/utils/soporte.js' %}?v=20261014-4"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const btnSaveChange = document.getElementById("btnSaveChange");
