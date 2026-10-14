@@ -1497,6 +1497,101 @@ def ticketsoportescreadosid_new_page(request, ticket_id):
     return render(request, 'detail_ticket.html', context)
 
 
+
+@login_required
+def historial_ticket_soporte(request, ticket_id):
+    """Devuelve una línea de tiempo del ticket usando los registros existentes."""
+    try:
+        ticket = TicketSoporte.objects.select_related(
+            "idAgente", "idSolicitante", "idSolicitante__idEmpresa", "idestado"
+        ).get(pk=ticket_id)
+    except TicketSoporte.DoesNotExist:
+        return JsonResponse({"error": "Ticket no encontrado"}, status=404)
+
+    eventos = [{
+        "fecha": ticket.fechaCreacion.isoformat() if ticket.fechaCreacion else "",
+        "tipo": "creacion",
+        "titulo": "Ticket registrado",
+        "detalle": ticket.asunto or ticket.comentario or "Se registró la solicitud",
+        "usuario": "Sistema",
+    }]
+
+    cambios = cambioEstadoTicketSoporte.objects.filter(
+        numTicket_id=ticket_id
+    ).select_related("idEstadoAnterior", "idEstadoActual", "idAgente").order_by("fechaCambio", "id")
+    for cambio in cambios:
+        usuario = cambio.idAgente.get_full_name().strip() or cambio.idAgente.username
+        anterior = cambio.idEstadoAnterior.descripcion if cambio.idEstadoAnterior_id else "Sin estado"
+        actual = cambio.idEstadoActual.descripcion if cambio.idEstadoActual_id else "Sin estado"
+        es_asignacion = cambio.idEstadoAnterior_id == 1 and cambio.idEstadoActual_id == 3
+        eventos.append({
+            "fecha": cambio.fechaCambio.isoformat() if cambio.fechaCambio else "",
+            "tipo": "asignacion" if es_asignacion else "estado",
+            "titulo": "Ticket asignado" if es_asignacion else "Cambio de estado",
+            "detalle": f"{anterior} → {actual}",
+            "usuario": usuario or "Sistema",
+        })
+
+    actividades = ActividadPrincipalSoporte.objects.filter(
+        idTicketSoporte_id=ticket_id
+    ).select_related("idAgente", "idestado").order_by("id")
+    for actividad in actividades:
+        usuario = actividad.idAgente.get_full_name().strip() or actividad.idAgente.username
+        fecha = actividad.fechafinal or actividad.fechainicio
+        eventos.append({
+            "fecha": fecha.isoformat() if fecha else "",
+            "tipo": "actividad",
+            "titulo": "Actividad registrada",
+            "detalle": actividad.descripcion,
+            "usuario": usuario or "Sistema",
+        })
+
+    trabajos = diarioTrabajo.objects.filter(
+        numTicket_id=ticket_id
+    ).select_related("idAgente").order_by("fechaRegistro", "id")
+    for trabajo in trabajos:
+        usuario = trabajo.idAgente.get_full_name().strip() or trabajo.idAgente.username
+        fecha = trabajo.fechaRegistro or trabajo.fechaInicio or trabajo.fechaFin
+        eventos.append({
+            "fecha": fecha.isoformat() if fecha else "",
+            "tipo": "trabajo",
+            "titulo": "Trabajo registrado",
+            "detalle": trabajo.actividadRealizada,
+            "usuario": usuario or "Sistema",
+        })
+
+    eventos.sort(key=lambda evento: (evento["fecha"] or "9999", evento["tipo"]))
+    return JsonResponse({"ticket": ticket_id, "eventos": eventos})
+
+
+@login_required
+def notificaciones_asignacion(request):
+    """Notifica a Carlos cuando Joselo asigna tickets, sin crear tablas nuevas."""
+    if request.user.username.lower() != "carlos":
+        return JsonResponse({"notificaciones": []})
+
+    asignaciones = cambioEstadoTicketSoporte.objects.filter(
+        idAgente__username__iexact="joselo",
+        idEstadoAnterior_id=1,
+        idEstadoActual_id=3,
+    ).select_related(
+        "numTicket", "numTicket__idSolicitante", "numTicket__idSolicitante__idEmpresa"
+    ).order_by("-fechaCambio", "-id")[:30]
+
+    notificaciones = []
+    for asignacion in asignaciones:
+        ticket = asignacion.numTicket
+        notificaciones.append({
+            "id": asignacion.id,
+            "ticket_id": ticket.id,
+            "asunto": ticket.asunto or ticket.comentario or "Ticket sin asunto",
+            "empresa": ticket.idSolicitante.idEmpresa.nombreEmpresa,
+            "fecha": asignacion.fechaCambio.isoformat() if asignacion.fechaCambio else "",
+            "url": f"/ticketsoportescreadosid_new_page/{ticket.id}/",
+            "mensaje": f"Joselo asignó el ticket #{ticket.id}",
+        })
+    return JsonResponse({"notificaciones": notificaciones})
+
 def ticketDesarrolloCreados(request):
     nombre_usuario = request.user.username if request.user.is_authenticated else None
     id_usuario = request.user.id if request.user.is_authenticated else None
@@ -2481,7 +2576,8 @@ def asign_admin_ticket_support(request, id_agente, id_ticket, id_user_modified):
             idEstadoAnterior=EstadosTicket.objects.get(id=1),
             idEstadoActual=EstadosTicket.objects.get(id=3),
             fechaCambio=fechaAsignacion,
-            idAgente=User.objects.get(id=id_agente),
+            # Registrar quién realizó la asignación, para auditoría e historial.
+            idAgente=User.objects.get(id=id_user_modified),
         )
         # Devolver la respuesta JSON
         return JsonResponse(
