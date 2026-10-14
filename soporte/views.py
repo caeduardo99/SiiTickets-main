@@ -1546,20 +1546,6 @@ def historial_ticket_soporte(request, ticket_id):
             "usuario": usuario or "Sistema",
         })
 
-    trabajos = diarioTrabajo.objects.filter(
-        numTicket_id=ticket_id
-    ).select_related("idAgente").order_by("fechaRegistro", "id")
-    for trabajo in trabajos:
-        usuario = trabajo.idAgente.get_full_name().strip() or trabajo.idAgente.username
-        fecha = trabajo.fechaRegistro or trabajo.fechaInicio or trabajo.fechaFin
-        eventos.append({
-            "fecha": fecha.isoformat() if fecha else "",
-            "tipo": "trabajo",
-            "titulo": "Trabajo registrado",
-            "detalle": trabajo.actividadRealizada,
-            "usuario": usuario or "Sistema",
-        })
-
     eventos.sort(key=lambda evento: (evento["fecha"] or "9999", evento["tipo"]))
     return JsonResponse({"ticket": ticket_id, "eventos": eventos})
 
