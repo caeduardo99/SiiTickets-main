@@ -3261,6 +3261,21 @@ def crear_empresa(request):
         )
         nueva_empresa.save()
 
+        # Registrar también el solicitante principal de la empresa, sin cambiar modelos.
+        solicitante_nombre = (request.POST.get("solicitanteNombre") or nombreEmpresa).strip()
+        solicitante_ruc = (request.POST.get("solicitanteRuc") or "").strip()
+        solicitante_telefono = (request.POST.get("solicitanteTelefono") or telefono).strip()
+        solicitante_direccion = (request.POST.get("solicitanteDireccion") or direccion).strip()
+        solicitante_correo = (request.POST.get("solicitanteCorreo") or email).strip()
+        Solicitante.objects.create(
+            ruc=solicitante_ruc,
+            nombreApellido=solicitante_nombre,
+            telefonoSolicitante=solicitante_telefono,
+            direccion=solicitante_direccion,
+            correo=solicitante_correo,
+            idEmpresa=nueva_empresa,
+        )
+
         # Crear el usuario asociado a la empresa
 
         username = nombreEmpresa.split()
@@ -3304,9 +3319,13 @@ def detalles_empresa(request):
     # Construir la consulta SQL con filtrado por numModulo
     consulta_sql = """
         SELECT se.id as NumEmpresa, se.nombreEmpresa, se.direccion, se.telefono, se.email,
+        ss.id as idSolicitante, ss.ruc as solicitanteRuc, ss.nombreApellido as solicitanteNombre,
+        ss.telefonoSolicitante as solicitanteTelefono, ss.direccion as solicitanteDireccion,
+        ss.correo as solicitanteCorreo,
 		sac.id as idAcceso, sac.nombreEquipo, sac.direccion as direccionMaquina, sac.usuario, sac.password,
 		sta.id as idTipoAcceso, sta.descripcion as tipoAcceso
         FROM soporte_empresa se
+        LEFT JOIN soporte_solicitante ss ON ss.idEmpresa_id = se.id
         LEFT JOIN soporte_accesoempresas sac ON sac.idEmpresa_id = se.id
         LEFT JOIN soporte_tipoacceso sta ON sta.id = sac.idTipoAcceso_id
         WHERE se.id = %s
@@ -3471,6 +3490,7 @@ def actualizar_solicitante(request):
             # Realiza la lógica para actualizar el solicitante
             solicitante = Solicitante.objects.get(id=data["numSolicitante"])
             solicitante.nombreApellido = data["Nombre"]
+            solicitante.ruc = data.get("Ruc", solicitante.ruc)
             solicitante.telefonoSolicitante = data["Telefono"]
             solicitante.direccion = data["Direccion"]
             solicitante.correo = data["Correo"]
