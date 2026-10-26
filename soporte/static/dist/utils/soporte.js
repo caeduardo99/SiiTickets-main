@@ -132,7 +132,7 @@ function cargarTickets(forceRefresh = false) {
   if (ticketsCache) return Promise.resolve(ticketsCache);
   if (ticketsRequest) return ticketsRequest;
 
-  ticketsRequest = fetch("ticketsoportescreados/")
+  ticketsRequest = fetch("ticketsoportescreados/", { cache: "no-store" })
     .then((response) => {
       if (!response.ok) throw new Error("No se pudieron cargar los tickets.");
       return response.json();
@@ -161,7 +161,8 @@ function mostrarTickets(completos) {
   tBodyTicketSoporte.innerHTML = "";
   toastr.info("Cargando tickets", "Espere ...");
 
-  cargarTickets()
+  // Siempre consultar el estado actual al entrar a una pestaña; no reutilizar datos antiguos.
+  cargarTickets(true)
     .then((tickets) => {
       resultadosProyectos = tickets.slice();
       if (!resultadosProyectos.length) {
